@@ -1,5 +1,5 @@
 {
-    "name": "hughcube/laravel-package",
+    "name": "hughcube/id-card",
     "description": "",
     "license": "MIT",
     "authors": [
@@ -9,33 +9,24 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "hughcube/laravel-service-support": "*"
+        "php": ">=7.0"
     },
     "require-dev": {
-        "laravel/framework": "*",
-        "laravel/lumen-framework": "*",
+        "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "*",
-        "phpstan/phpstan": "*",
-        "orchestra/testbench": "*"
+        "phpstan/phpstan": "*"
     },
     "autoload": {
         "psr-4": {
-            "HughCube\\Laravel\\Package\\": "src"
+            "HughCube\\IdCard\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HughCube\\Laravel\\Package\\Tests\\": "tests"
+            "HughCube\\IdCard\\Tests\\": "tests"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "HughCube\\Laravel\\Package\\ServiceProvider"
-            ]
-        }
-    },
+    "extra": {},
     "scripts": {
         "test": "phpunit --verbose --coverage-clover=coverage.clover",
         "phpstan": "phpstan analyse -vvv",
