@@ -10,6 +10,9 @@ namespace HughCube\IdCard;
 
 trait Code
 {
+    /**
+     * @see http://www.zxinc.org/gb2260.htm
+     */
     protected static $codes = [
         110000, //北京市
         110100, //市辖区
