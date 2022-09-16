@@ -7,8 +7,8 @@
     <a href="https://github.com/hughcube-php/id-card/actions?query=workflow%3ALint">
         <img src="https://github.com/hughcube-php/id-card/workflows/Lint/badge.svg" alt="Lint Actions status">
     </a>
-    <a href="https://styleci.io/repos/217659566">
-        <img src="https://github.styleci.io/repos/217659566/shield?branch=master" alt="StyleCI">
+    <a href="https://styleci.io/repos/537484766">
+        <img src="https://github.styleci.io/repos/537484766/shield?branch=master" alt="StyleCI">
     </a>
 </p>
 
