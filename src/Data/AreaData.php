@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hugh.li
  * Date: 2023/7/7
- * Time: 10:05
+ * Time: 10:05.
  */
 
 namespace HughCube\IdCard\Data;

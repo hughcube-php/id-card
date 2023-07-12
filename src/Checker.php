@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hugh.li
  * Date: 2023/7/6
- * Time: 20:16
+ * Time: 20:16.
  */
 
 namespace HughCube\IdCard;
@@ -23,14 +23,14 @@ class Checker
     const MODE_GENDER = 1 << 8;
 
     const MODE_ALL = 0
-    /**           */ | self::MODE_TYPE
-    /**           */ | self::MODE_MATCH
-    /**           */ | self::MODE_FACTOR
-    /**           */ | self::MODE_PROVINCE
-    /**           */ | self::MODE_CITY
-    /**           */ | self::MODE_COUNTY
-    /**           */ | self::MODE_BIRTHDAY
-    /**           */ | self::MODE_GENDER;
+ | self::MODE_TYPE
+ | self::MODE_MATCH
+ | self::MODE_FACTOR
+ | self::MODE_PROVINCE
+ | self::MODE_CITY
+ | self::MODE_COUNTY
+ | self::MODE_BIRTHDAY
+ | self::MODE_GENDER;
 
     protected $id;
 
@@ -89,11 +89,12 @@ class Checker
     public function isValidMatch(): bool
     {
         $code = $this->id->getValidCode();
-        return 0 < preg_match("/^([0-9]{17}[0-9X])$/i", strtoupper($code));
+
+        return 0 < preg_match('/^([0-9]{17}[0-9X])$/i', strtoupper($code));
     }
 
     /**
-     * 身份证规则一, 把前十七位和系数相乘,然后相加对11取余,对应第十八位
+     * 身份证规则一, 把前十七位和系数相乘,然后相加对11取余,对应第十八位.
      */
     public function isValidFactor(): bool
     {
