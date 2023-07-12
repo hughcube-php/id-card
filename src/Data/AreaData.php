@@ -25,7 +25,7 @@ class AreaData
         return static::$areas[$code] ?? null;
     }
 
-    protected static $areas = array(
+    protected static $areas = [
         110000 => '北京市',
         110100 => '市辖区',
         110101 => '东城区',
@@ -7210,5 +7210,5 @@ class AreaData
         710000 => '台湾省',
         810000 => '香港特别行政区',
         820000 => '澳门特别行政区',
-    );
+    ];
 }
