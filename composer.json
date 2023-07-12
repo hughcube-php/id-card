@@ -32,7 +32,7 @@
     "extra": {},
     "scripts": {
         "test": "phpunit",
-        "phpstan": "phpstan analyse -vvv",
+        "phpstan": "phpstan analyse -vvv --memory-limit=-1 src/",
         "check-style": "phpcs -p --standard=PSR2 src/ -v",
         "fix-style": "phpcbf -p --standard=PSR2 src/ -v"
     },
