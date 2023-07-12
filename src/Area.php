@@ -31,7 +31,7 @@ class Area
 
     public function getName(): ?string
     {
-        return AreaData::$areas[$this->getValidCode()] ?? null;
+        return AreaData::name($this->getValidCode());
     }
 
     public function isPH(): bool
@@ -42,6 +42,6 @@ class Area
 
     public function isExists(): bool
     {
-        return isset(AreaData::$areas[$this->getValidCode()]);
+        return AreaData::exists($this->getValidCode());
     }
 }

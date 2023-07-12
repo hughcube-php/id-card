@@ -10,7 +10,22 @@ namespace HughCube\IdCard\Data;
 
 class AreaData
 {
-    public static $areas = array(
+    public static function all(): array
+    {
+        return static::$areas;
+    }
+
+    public static function exists($code): bool
+    {
+        return isset(static::$areas[$code]);
+    }
+
+    public static function name($code): ?string
+    {
+        return static::$areas[$code] ?? null;
+    }
+
+    protected static $areas = array(
         110000 => '北京市',
         110100 => '市辖区',
         110101 => '东城区',
