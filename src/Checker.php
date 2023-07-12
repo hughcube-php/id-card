@@ -23,14 +23,14 @@ class Checker
     const MODE_GENDER = 1 << 8;
 
     const MODE_ALL = 0
- | self::MODE_TYPE
- | self::MODE_MATCH
- | self::MODE_FACTOR
- | self::MODE_PROVINCE
- | self::MODE_CITY
- | self::MODE_COUNTY
- | self::MODE_BIRTHDAY
- | self::MODE_GENDER;
+    | self::MODE_TYPE
+    | self::MODE_MATCH
+    | self::MODE_FACTOR
+    | self::MODE_PROVINCE
+    | self::MODE_CITY
+    | self::MODE_COUNTY
+    | self::MODE_BIRTHDAY
+    | self::MODE_GENDER;
 
     protected $id;
 
