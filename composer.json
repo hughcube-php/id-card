@@ -9,12 +9,15 @@
         }
     ],
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.1",
+        "nesbot/carbon": "*",
+        "hughcube/enum": "*"
     },
     "require-dev": {
+        "phpstan/phpstan": "*",
         "phpunit/phpunit": "*",
-        "squizlabs/php_codesniffer": "*",
-        "phpstan/phpstan": "*"
+        "guzzlehttp/guzzle": "*",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {
@@ -28,7 +31,7 @@
     },
     "extra": {},
     "scripts": {
-        "test": "phpunit --verbose --coverage-clover=coverage.clover",
+        "test": "phpunit",
         "phpstan": "phpstan analyse -vvv",
         "check-style": "phpcs -p --standard=PSR2 src/ -v",
         "fix-style": "phpcbf -p --standard=PSR2 src/ -v"

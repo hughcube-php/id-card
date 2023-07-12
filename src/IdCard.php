@@ -8,6 +8,9 @@
 
 namespace HughCube\IdCard;
 
+/**
+ * @deprecated
+ */
 class IdCard
 {
     use Code;

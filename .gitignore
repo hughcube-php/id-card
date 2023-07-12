@@ -7,3 +7,5 @@ composer.lock
 .subsplit
 .php_cs.cache
 .phpunit.result.cache
+.phpunit.cache
+phpunit.xml.dist.bak
