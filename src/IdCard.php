@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hugh.li
  * Date: 2022/9/16
- * Time: 22:10
+ * Time: 22:10.
  */
 
 namespace HughCube\IdCard;
@@ -16,14 +16,14 @@ class IdCard
     use Code;
 
     /**
-     * 身份证每位对应的系数,用于判断身份证是否合法;
+     * 身份证每位对应的系数,用于判断身份证是否合法;.
      *
      * @var array
      */
     protected static $factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
 
     /**
-     * 身份证最后一位可能出现的字符;
+     * 身份证最后一位可能出现的字符;.
      *
      * @var array
      */
@@ -33,12 +33,12 @@ class IdCard
     {
         $idCard = strtoupper(strval($idCard));
 
-        if (!preg_match("/^([0-9]{17}[0-9X])$/i", $idCard)) {
+        if (!preg_match('/^([0-9]{17}[0-9X])$/i', $idCard)) {
             return false;
         }
 
         /**
-         * 身份证规则一, 把前十七位和系数相乘,然后相加对11取余,对应第十八位
+         * 身份证规则一, 把前十七位和系数相乘,然后相加对11取余,对应第十八位.
          */
         $sum = 0;
         for ($i = 0; $i < 17; $i++) {
@@ -67,7 +67,7 @@ class IdCard
 
     /**
      * 0: 女性
-     * 1: 男性
+     * 1: 男性.
      */
     public static function getGender($idCard)
     {
@@ -79,7 +79,7 @@ class IdCard
     }
 
     /**
-     * 格式如2013-8-13
+     * 格式如2013-8-13.
      */
     public static function getBirthday($idCard)
     {
@@ -87,6 +87,6 @@ class IdCard
             return null;
         }
 
-        return sprintf("%s-%s-%s", substr($idCard, 6, 4), substr($idCard, 10, 2), substr($idCard, 12, 2));
+        return sprintf('%s-%s-%s', substr($idCard, 6, 4), substr($idCard, 10, 2), substr($idCard, 12, 2));
     }
 }
