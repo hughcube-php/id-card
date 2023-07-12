@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hugh.li
  * Date: 2022/9/16
- * Time: 22:10
+ * Time: 22:10.
  */
 
 namespace HughCube\IdCard;
@@ -38,7 +38,7 @@ class Id
 
     /**
      * 之所以加上mode参数, 是因为有些身份证的地区码是非常奇怪的,
-     * 没办法收集全, 默认就不再检测城市和县级
+     * 没办法收集全, 默认就不再检测城市和县级.
      */
     public function isValid($mode = Checker::MODE_ALL ^ Checker::MODE_CITY ^ Checker::MODE_COUNTY): bool
     {
@@ -117,6 +117,7 @@ class Id
         $code = substr($this->getValidCode(), 16, 1);
 
         $gender = intval($code) % 2;
+
         return (false !== $code && GenderEnum::has($gender)) ? $gender : null;
     }
 }

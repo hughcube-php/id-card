@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: hugh.li
  * Date: 2023/7/12
- * Time: 10:47
+ * Time: 10:47.
  */
 
 namespace HughCube\IdCard\Enum;
@@ -21,7 +21,7 @@ class GenderEnum extends Enum
     public static function labels(): array
     {
         return [
-            static::MALE => ['title' => '男', 'name' => 'male'],
+            static::MALE   => ['title' => '男', 'name' => 'male'],
             static::FEMALE => ['title' => '女', 'name' => 'female'],
         ];
     }
