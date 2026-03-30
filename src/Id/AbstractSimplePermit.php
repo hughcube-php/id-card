@@ -9,7 +9,6 @@ use Generator;
  */
 abstract class AbstractSimplePermit extends AbstractId
 {
-
     /**
      * 返回合法的前缀字母数组, 如 ['H'] 或 ['C', 'W'].
      *
@@ -24,14 +23,14 @@ abstract class AbstractSimplePermit extends AbstractId
 
     public static function getPattern(): string
     {
-        return '/^[' . implode('', static::getValidPrefixes()) . ']\d{8}$/i';
+        return '/^['.implode('', static::getValidPrefixes()).']\d{8}$/i';
     }
 
     public static function getCompletePattern(): string
     {
         $prefixRegex = implode('', static::getValidPrefixes());
 
-        return '/^([' . $prefixRegex . '*])([0-9*]{8})$/i';
+        return '/^(['.$prefixRegex.'*])([0-9*]{8})$/i';
     }
 
     /**
@@ -58,7 +57,7 @@ abstract class AbstractSimplePermit extends AbstractId
             return null;
         }
 
-        return substr($code, 0, 3) . str_repeat('*', $len - 5) . substr($code, -2);
+        return substr($code, 0, 3).str_repeat('*', $len - 5).substr($code, -2);
     }
 
     /**
@@ -90,7 +89,7 @@ abstract class AbstractSimplePermit extends AbstractId
 
         foreach ($letters as $letter) {
             foreach (static::cartesianProduct($digitChars) as $digitArr) {
-                yield $letter . implode('', $digitArr);
+                yield $letter.implode('', $digitArr);
             }
         }
     }

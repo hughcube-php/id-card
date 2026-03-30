@@ -45,7 +45,7 @@ class IdTypeRuleTest extends TestCase
             $rule->validate('id_type', $value, function () use (&$failed) {
                 $failed = true;
             });
-            $this->assertTrue($failed, "Value " . var_export($value, true) . " should be invalid");
+            $this->assertTrue($failed, 'Value '.var_export($value, true).' should be invalid');
         }
     }
 }

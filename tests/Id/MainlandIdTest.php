@@ -3,9 +3,9 @@
 namespace HughCube\IdCard\Tests\Id;
 
 use HughCube\IdCard\Contract\IdInterface;
+use HughCube\IdCard\Enum\GenderEnum;
 use HughCube\IdCard\Id\MainlandId;
 use HughCube\IdCard\IdType;
-use HughCube\IdCard\Enum\GenderEnum;
 use PHPUnit\Framework\TestCase;
 
 class MainlandIdTest extends TestCase

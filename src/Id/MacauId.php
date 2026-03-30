@@ -17,7 +17,7 @@ class MacauId extends AbstractId
 
     /**
      * 去除斜杠和括号, 标准化.
-     * 支持格式: 12345678, 1/234567/8, 1234567(8), 1234567(A)
+     * 支持格式: 12345678, 1/234567/8, 1234567(8), 1234567(A).
      */
     public static function normalize(string $code): string
     {
@@ -55,7 +55,7 @@ class MacauId extends AbstractId
             return null;
         }
 
-        return $normalized[0] . str_repeat('*', 5) . substr($normalized, -2);
+        return $normalized[0].str_repeat('*', 5).substr($normalized, -2);
     }
 
     /**
@@ -135,6 +135,7 @@ class MacauId extends AbstractId
             if ($instance->isValid()) {
                 yield $normalized;
             }
+
             return;
         }
 
@@ -151,6 +152,7 @@ class MacauId extends AbstractId
             if ($instance->isValid()) {
                 yield $code;
             }
+
             return;
         }
 
@@ -162,6 +164,7 @@ class MacauId extends AbstractId
                 $code[7] = $check;
                 yield $code;
             }
+
             return;
         }
 

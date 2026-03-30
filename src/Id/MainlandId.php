@@ -14,13 +14,13 @@ use HughCube\IdCard\IdType;
  */
 class MainlandId extends AbstractId
 {
-    const MODE_MATCH    = 1 << 0;
-    const MODE_FACTOR   = 1 << 1;
+    const MODE_MATCH = 1 << 0;
+    const MODE_FACTOR = 1 << 1;
     const MODE_PROVINCE = 1 << 2;
-    const MODE_CITY     = 1 << 3;
-    const MODE_COUNTY   = 1 << 4;
+    const MODE_CITY = 1 << 3;
+    const MODE_COUNTY = 1 << 4;
     const MODE_BIRTHDAY = 1 << 5;
-    const MODE_GENDER   = 1 << 6;
+    const MODE_GENDER = 1 << 6;
 
     const MODE_ALL = 0
         | self::MODE_MATCH
@@ -108,7 +108,7 @@ class MainlandId extends AbstractId
             return null;
         }
 
-        return substr($code, 0, 3) . str_repeat('*', 11) . substr($code, -4);
+        return substr($code, 0, 3).str_repeat('*', 11).substr($code, -4);
     }
 
     public function getBirthday(): ?Carbon
@@ -207,6 +207,7 @@ class MainlandId extends AbstractId
             if ($instance->isValid()) {
                 yield $code;
             }
+
             return;
         }
 
@@ -219,12 +220,12 @@ class MainlandId extends AbstractId
             if (($mode & self::COMPLETE_AREA) && $pos < 6) {
                 $areaPos = $pos;
                 if ($areaPos === 1) {
-                    $provinceCode = substr($newCode, 0, 2) . '0000';
+                    $provinceCode = substr($newCode, 0, 2).'0000';
                     if (!AreaData::exists($provinceCode)) {
                         continue;
                     }
                 } elseif ($areaPos === 3) {
-                    $cityCode = substr($newCode, 0, 4) . '00';
+                    $cityCode = substr($newCode, 0, 4).'00';
                     if (!AreaData::exists($cityCode)) {
                         continue;
                     }
@@ -271,6 +272,7 @@ class MainlandId extends AbstractId
                     return [static::calculateCheckDigit($code)];
                 }
             }
+
             return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X'];
         }
 

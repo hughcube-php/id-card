@@ -47,6 +47,7 @@ class MainlandToHkMoPermit extends AbstractSimplePermit
         // 旧版 C/W + 8位数字
         if (preg_match('/^([CW*])([0-9*]{8})$/i', $normalized, $matches)) {
             yield from static::completeSimple($matches[1], $matches[2], ['C', 'W']);
+
             return;
         }
 
@@ -67,9 +68,10 @@ class MainlandToHkMoPermit extends AbstractSimplePermit
 
             foreach ($letters as $letter) {
                 foreach (static::cartesianProduct($digitChars) as $digitArr) {
-                    yield $prefix . $letter . implode('', $digitArr);
+                    yield $prefix.$letter.implode('', $digitArr);
                 }
             }
+
             return;
         }
     }
@@ -88,7 +90,7 @@ class MainlandToHkMoPermit extends AbstractSimplePermit
 
         foreach ($letters as $letter) {
             foreach (static::cartesianProduct($digitChars) as $digitArr) {
-                yield $letter . implode('', $digitArr);
+                yield $letter.implode('', $digitArr);
             }
         }
     }
