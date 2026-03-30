@@ -160,5 +160,4 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
             }
         }
     }
-
 }

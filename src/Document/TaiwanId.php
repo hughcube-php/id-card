@@ -210,5 +210,4 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
             }
         }
     }
-
 }

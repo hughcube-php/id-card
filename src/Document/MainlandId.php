@@ -13,7 +13,12 @@ use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\Data\AreaData;
 use HughCube\IdCard\Enum\GenderEnum;
 
-class MainlandId implements DocumentInterface, BirthdayAwareInterface, GenderAwareInterface, AreaAwareInterface, MainlandIssuedInterface
+class MainlandId implements
+    DocumentInterface,
+    BirthdayAwareInterface,
+    GenderAwareInterface,
+    AreaAwareInterface,
+    MainlandIssuedInterface
 {
     const MODE_MATCH    = 1 << 0;
     const MODE_FACTOR   = 1 << 1;
