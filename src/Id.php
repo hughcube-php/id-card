@@ -51,9 +51,39 @@ class Id
      */
     public function isValid($mode = Checker::MODE_ALL ^ Checker::MODE_CITY ^ Checker::MODE_COUNTY): bool
     {
-        $checker = new Checker($this);
+        // 将 Checker::MODE_* 映射到 MainlandId::MODE_*
+        $mainlandMode = 0;
 
-        return $checker->isValid($mode);
+        if ($mode & Checker::MODE_TYPE) {
+            // MODE_TYPE 检查是否为字符串, MainlandId 构造函数已强制 string, 这里手动检查
+            if (!is_string($this->code)) {
+                return false;
+            }
+        }
+
+        if ($mode & Checker::MODE_MATCH) {
+            $mainlandMode |= MainlandId::MODE_MATCH;
+        }
+        if ($mode & Checker::MODE_FACTOR) {
+            $mainlandMode |= MainlandId::MODE_FACTOR;
+        }
+        if ($mode & Checker::MODE_PROVINCE) {
+            $mainlandMode |= MainlandId::MODE_PROVINCE;
+        }
+        if ($mode & Checker::MODE_CITY) {
+            $mainlandMode |= MainlandId::MODE_CITY;
+        }
+        if ($mode & Checker::MODE_COUNTY) {
+            $mainlandMode |= MainlandId::MODE_COUNTY;
+        }
+        if ($mode & Checker::MODE_BIRTHDAY) {
+            $mainlandMode |= MainlandId::MODE_BIRTHDAY;
+        }
+        if ($mode & Checker::MODE_GENDER) {
+            $mainlandMode |= MainlandId::MODE_GENDER;
+        }
+
+        return $this->mainland->isValid($mainlandMode);
     }
 
     public function getProvince(): Area
