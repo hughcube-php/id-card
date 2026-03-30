@@ -140,7 +140,7 @@ class MacauIdTest extends TestCase
         // 10000003 是有效的(如上), 检查是否包含
         $this->assertContains('10000003', $results);
         foreach ($results as $r) {
-            $this->assertMatchesRegularExpression('/^[157]/', $r);
+            $this->assertTrue((bool) preg_match('/^[157]/', $r), "Should start with 1/5/7: {$r}");
         }
 
         // 带斜杠输入, complete 也能处理
