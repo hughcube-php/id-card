@@ -93,8 +93,12 @@ class IdType
     /**
      * 获取证件类型的中文标题.
      */
-    public static function title(string $type): ?string
+    public static function title($type): ?string
     {
+        if (!is_string($type)) {
+            return null;
+        }
+
         return static::$titles[$type] ?? null;
     }
 
