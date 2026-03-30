@@ -34,7 +34,7 @@ class Checker
 
     protected $id;
 
-    public function __construct(Id $id = null)
+    public function __construct(?Id $id = null)
     {
         $this->id = $id;
     }

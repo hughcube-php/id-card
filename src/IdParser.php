@@ -35,7 +35,6 @@ class IdParser
         ];
 
         foreach ($classes as $class) {
-            /** @var IdInterface $instance */
             $instance = new $class($code);
             if ($instance->isValid()) {
                 return $instance;

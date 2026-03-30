@@ -8,9 +8,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class IdTypeRule implements ValidationRule
 {
-    public static function make(): static
+    public static function make(): self
     {
-        return new static();
+        return new self();
     }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
