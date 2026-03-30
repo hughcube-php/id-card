@@ -55,14 +55,38 @@ class MainlandPermitTest extends TestCase
     }
 
     /**
+     * MainlandToHkMoPermit: 新版格式 C + 字母 + 7位数字 (2018年12月后).
+     */
+    public function testHkMoValidNewFormat()
+    {
+        $permit = new MainlandToHkMoPermit('CA1234567');
+        $this->assertTrue($permit->isValid());
+
+        $permit = new MainlandToHkMoPermit('CB1234567');
+        $this->assertTrue($permit->isValid());
+
+        $permit = new MainlandToHkMoPermit('CZ1234567');
+        $this->assertTrue($permit->isValid());
+    }
+
+    /**
+     * MainlandToHkMoPermit: 新版格式不允许 I 和 O.
+     */
+    public function testHkMoNewFormatExcludesIO()
+    {
+        $permit = new MainlandToHkMoPermit('CI1234567');
+        $this->assertFalse($permit->isValid());
+
+        $permit = new MainlandToHkMoPermit('CO1234567');
+        $this->assertFalse($permit->isValid());
+    }
+
+    /**
      * MainlandToHkMoPermit: 无效格式 - 长度错误.
      */
     public function testHkMoInvalidLength()
     {
         $permit = new MainlandToHkMoPermit('C1234567');
-        $this->assertFalse($permit->isValid());
-
-        $permit = new MainlandToHkMoPermit('C123456789');
         $this->assertFalse($permit->isValid());
 
         $permit = new MainlandToHkMoPermit('');

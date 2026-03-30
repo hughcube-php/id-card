@@ -32,11 +32,35 @@ abstract class AbstractSimplePermit implements DocumentInterface
      */
     abstract protected static function getValidPrefixes(): array;
 
+    /**
+     * 返回验证用正则表达式.
+     */
+    protected static function getPattern(): string
+    {
+        return '/^[' . implode('', static::getValidPrefixes()) . ']\d{8}$/i';
+    }
+
+    /**
+     * 返回 complete 用正则表达式(支持通配符).
+     */
+    protected static function getCompletePattern(): string
+    {
+        $prefixRegex = implode('', static::getValidPrefixes());
+
+        return '/^([' . $prefixRegex . '*])([0-9*]{8})$/i';
+    }
+
+    /**
+     * 返回 complete 中数字位长度.
+     */
+    protected static function getDigitLength(): int
+    {
+        return 8;
+    }
+
     public function isValid(int $mode = 0): bool
     {
-        $pattern = '/^[' . implode('', static::getValidPrefixes()) . ']\d{8}$/i';
-
-        return (bool) preg_match($pattern, $this->code);
+        return (bool) preg_match(static::getPattern(), $this->code);
     }
 
     /**
@@ -45,20 +69,20 @@ abstract class AbstractSimplePermit implements DocumentInterface
     public static function complete(string $code, int $mode = 0): Generator
     {
         $normalized = strtoupper($code);
-        $prefixes = static::getValidPrefixes();
-        $prefixRegex = implode('', $prefixes);
 
-        if (!preg_match('/^([' . $prefixRegex . '*])([0-9*]{8})$/i', $normalized, $matches)) {
+        if (!preg_match(static::getCompletePattern(), $normalized, $matches)) {
             return;
         }
 
         $letterPattern = $matches[1];
         $digitsPattern = $matches[2];
+        $prefixes = static::getValidPrefixes();
 
         $letters = ($letterPattern === '*') ? $prefixes : [$letterPattern];
 
+        $digitLen = static::getDigitLength();
         $digitChars = [];
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < $digitLen; $i++) {
             if ($digitsPattern[$i] === '*') {
                 $digitChars[$i] = range('0', '9');
             } else {

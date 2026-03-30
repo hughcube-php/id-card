@@ -30,11 +30,12 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
     }
 
     /**
-     * 去除斜杠, 标准化为8位纯数字.
+     * 去除斜杠和括号, 标准化为纯数字.
+     * 支持格式: 12345678, 1/234567/8, 1234567(8)
      */
     protected static function normalize(string $code): string
     {
-        return str_replace('/', '', $code);
+        return str_replace(['/', '(', ')'], '', $code);
     }
 
     /**

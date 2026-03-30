@@ -123,4 +123,25 @@ class DocumentParserTest extends TestCase
         $this->assertInstanceOf(MacauId::class, $doc);
         $this->assertNotInstanceOf(MainlandId::class, $doc);
     }
+
+    /**
+     * 新版港澳通行证格式 CA1234567 应被正确识别.
+     */
+    public function test_parse_new_format_hkmo_permit()
+    {
+        $doc = DocumentParser::parse('CA1234567');
+        $this->assertInstanceOf(MainlandToHkMoPermit::class, $doc);
+    }
+
+    /**
+     * 11位回乡证应被正确识别.
+     */
+    public function test_parse_full_format_home_return_permit()
+    {
+        $doc = DocumentParser::parse('H1234567800');
+        $this->assertInstanceOf(HkToMainlandPermit::class, $doc);
+
+        $doc = DocumentParser::parse('M1234567800');
+        $this->assertInstanceOf(MoToMainlandPermit::class, $doc);
+    }
 }

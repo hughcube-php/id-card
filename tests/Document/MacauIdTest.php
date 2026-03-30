@@ -127,6 +127,19 @@ class MacauIdTest extends TestCase
     }
 
     /**
+     * 测试括号格式: 1234567(8).
+     */
+    public function testParenthesisFormat()
+    {
+        $id = new MacauId('1000000(3)');
+        $this->assertTrue($id->isValid());
+        $this->assertSame('1000000(3)', $id->getCode());
+
+        $id = new MacauId('5000000(4)');
+        $this->assertTrue($id->isValid());
+    }
+
+    /**
      * 测试接口实现.
      */
     public function testInstanceOf()

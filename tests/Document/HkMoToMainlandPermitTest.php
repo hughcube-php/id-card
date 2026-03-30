@@ -50,10 +50,28 @@ class HkMoToMainlandPermitTest extends TestCase
         $permit = new HkToMainlandPermit('H1234567');
         $this->assertFalse($permit->isValid());
 
-        $permit = new HkToMainlandPermit('H123456789');
-        $this->assertFalse($permit->isValid());
-
         $permit = new HkToMainlandPermit('');
+        $this->assertFalse($permit->isValid());
+    }
+
+    /**
+     * HkToMainlandPermit: 11位完整号(含换证次数).
+     */
+    public function testHkValidFullFormat()
+    {
+        $permit = new HkToMainlandPermit('H1234567800');
+        $this->assertTrue($permit->isValid());
+
+        $permit = new HkToMainlandPermit('H1234567801');
+        $this->assertTrue($permit->isValid());
+    }
+
+    /**
+     * HkToMainlandPermit: 10位无效(不是9也不是11).
+     */
+    public function testHkInvalid10Digits()
+    {
+        $permit = new HkToMainlandPermit('H123456789');
         $this->assertFalse($permit->isValid());
     }
 
@@ -120,11 +138,17 @@ class HkMoToMainlandPermitTest extends TestCase
         $permit = new MoToMainlandPermit('M1234567');
         $this->assertFalse($permit->isValid());
 
-        $permit = new MoToMainlandPermit('M123456789');
-        $this->assertFalse($permit->isValid());
-
         $permit = new MoToMainlandPermit('');
         $this->assertFalse($permit->isValid());
+    }
+
+    /**
+     * MoToMainlandPermit: 11位完整号(含换证次数).
+     */
+    public function testMoValidFullFormat()
+    {
+        $permit = new MoToMainlandPermit('M1234567800');
+        $this->assertTrue($permit->isValid());
     }
 
     /**
