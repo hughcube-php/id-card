@@ -9,6 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 class IdCodeRuleTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if (!interface_exists(\Illuminate\Contracts\Validation\ValidationRule::class)) {
+            $this->markTestSkipped('illuminate/validation is not installed');
+        }
+    }
+
     public function test_make()
     {
         $rule = IdCodeRule::make();

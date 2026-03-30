@@ -13,7 +13,7 @@ class TaiwanId extends AbstractId
     /**
      * 字母对应数字映射表.
      */
-    protected static $letterMap = [
+    protected static array $letterMap = [
         'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15,
         'G' => 16, 'H' => 17, 'I' => 34, 'J' => 18, 'K' => 19, 'L' => 20,
         'M' => 21, 'N' => 22, 'O' => 35, 'P' => 23, 'Q' => 24, 'R' => 25,
@@ -24,7 +24,7 @@ class TaiwanId extends AbstractId
     /**
      * 地区映射表.
      */
-    protected static $regionMap = [
+    protected static array $regionMap = [
         'A' => '台北市', 'B' => '台中市', 'C' => '基隆市', 'D' => '台南市',
         'E' => '高雄市', 'F' => '新北市', 'G' => '宜兰县', 'H' => '桃园市',
         'I' => '嘉义市', 'J' => '新竹县', 'K' => '苗栗县', 'L' => '台中县',
@@ -176,9 +176,7 @@ class TaiwanId extends AbstractId
         $digitPositions = substr($normalized, 1, 8);
         $checkPos = $normalized[9];
 
-        $onlyCheckWild = ($letterPos !== '*')
-            && (strpos($digitPositions, '*') === false)
-            && $checkPos === '*';
+        $onlyCheckWild = ($letterPos !== '*') && (strpos($digitPositions, '*') === false) && $checkPos === '*';
 
         if ($onlyCheckWild) {
             $first9 = $letterPos . $digitPositions;

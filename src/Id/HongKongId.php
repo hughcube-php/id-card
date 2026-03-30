@@ -128,8 +128,8 @@ class HongKongId extends AbstractId
         $digitsPattern = $matches[2];
         $checkPattern = $matches[3];
 
-        $onlyCheckWild = !str_contains($prefixPattern, '*')
-            && !str_contains($digitsPattern, '*')
+        $onlyCheckWild = strpos($prefixPattern, '*') === false
+            && strpos($digitsPattern, '*') === false
             && $checkPattern === '*';
 
         if ($onlyCheckWild) {

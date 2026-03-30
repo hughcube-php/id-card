@@ -11,8 +11,11 @@ class IdCodeRule implements ValidationRule, DataAwareRule
 {
     protected array $data = [];
 
-    public function __construct(protected string $typeField = 'id_type')
+    protected string $typeField;
+
+    public function __construct(string $typeField = 'id_type')
     {
+        $this->typeField = $typeField;
     }
 
     public static function make(string $typeField = 'id_type'): self
@@ -20,13 +23,16 @@ class IdCodeRule implements ValidationRule, DataAwareRule
         return new self($typeField);
     }
 
-    public function setData(array $data): static
+    /**
+     * @return $this
+     */
+    public function setData(array $data)
     {
         $this->data = $data;
         return $this;
     }
 
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function validate(string $attribute, $value, Closure $fail): void
     {
         $type = $this->data[$this->typeField] ?? null;
         if (empty($type) || !is_string($type)) {

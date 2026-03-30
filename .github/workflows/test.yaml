@@ -10,7 +10,7 @@ jobs:
       max-parallel: 15
       matrix:
         operating-system: [ ubuntu-latest, windows-latest, macOS-latest ]
-        php-versions: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
+        php-versions: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - name: Checkout
@@ -32,6 +32,10 @@ jobs:
           php -m
       - name: Validate composer.json and composer.lock
         run: composer validate
+
+      - name: Remove incompatible dev dependencies
+        if: matrix.php-versions < '8.1'
+        run: composer remove --dev illuminate/validation --no-update
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest

@@ -13,7 +13,7 @@ class IdTypeRule implements ValidationRule
         return new self();
     }
 
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function validate(string $attribute, $value, Closure $fail): void
     {
         if (!is_string($value) || !IdType::has($value)) {
             $fail('证件类型无效');
