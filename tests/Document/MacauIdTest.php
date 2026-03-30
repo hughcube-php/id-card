@@ -29,6 +29,28 @@ class MacauIdTest extends TestCase
     }
 
     /**
+     * 测试校验码为 A 的情况.
+     * 1000002: 1*8+0*7+0*6+0*5+0*4+0*3+2*2 = 12, 12%11=1, 11-1=10 → A
+     */
+    public function testCheckDigitA()
+    {
+        $id = new MacauId('1000002A');
+        $this->assertTrue($id->isValid());
+
+        // 小写 a 也合法
+        $id = new MacauId('1000002a');
+        $this->assertTrue($id->isValid());
+
+        // 括号格式
+        $id = new MacauId('1000002(A)');
+        $this->assertTrue($id->isValid());
+
+        // 斜杠格式
+        $id = new MacauId('1/000002/A');
+        $this->assertTrue($id->isValid());
+    }
+
+    /**
      * 测试无效号码.
      */
     public function testInvalidIds()
@@ -41,8 +63,8 @@ class MacauIdTest extends TestCase
         $id = new MacauId('1000000');
         $this->assertFalse($id->isValid());
 
-        // 含字母
-        $id = new MacauId('1000000A');
+        // 非法字母 (B不是合法校验码)
+        $id = new MacauId('1000000B');
         $this->assertFalse($id->isValid());
 
         // 空字符串
@@ -107,6 +129,11 @@ class MacauIdTest extends TestCase
         $results = iterator_to_array(MacauId::complete('1000000*'));
         $this->assertCount(1, $results);
         $this->assertContains('10000003', $results);
+
+        // 校验码为 A 的 complete
+        $results = iterator_to_array(MacauId::complete('1000002*'));
+        $this->assertCount(1, $results);
+        $this->assertContains('1000002A', $results);
 
         // 首位通配, 应展开 1/5/7
         $results = iterator_to_array(MacauId::complete('*0000003'));

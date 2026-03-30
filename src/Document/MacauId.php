@@ -30,12 +30,12 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
     }
 
     /**
-     * 去除斜杠和括号, 标准化为纯数字.
-     * 支持格式: 12345678, 1/234567/8, 1234567(8)
+     * 去除斜杠和括号, 标准化.
+     * 支持格式: 12345678, 1/234567/8, 1234567(8), 1234567(A)
      */
     protected static function normalize(string $code): string
     {
-        return str_replace(['/', '(', ')'], '', $code);
+        return strtoupper(str_replace(['/', '(', ')'], '', $code));
     }
 
     /**
@@ -45,32 +45,51 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
     {
         $normalized = static::normalize($this->code);
 
-        if (!preg_match('/^[157]\d{6}\d$/', $normalized)) {
+        // 前7位数字, 第8位数字或A
+        if (!preg_match('/^[157]\d{6}[\dA]$/', $normalized)) {
             return false;
         }
 
-        return static::checksum($normalized) === 0;
+        return static::verifyCheckDigit($normalized);
     }
 
     /**
-     * 计算加权和 mod 11.
+     * 验证校验码是否正确.
      */
-    protected static function checksum(string $digits): int
+    protected static function verifyCheckDigit(string $normalized8): bool
     {
-        $weights = [8, 7, 6, 5, 4, 3, 2, 1];
+        $weights = [8, 7, 6, 5, 4, 3, 2];
         $sum = 0;
-        for ($i = 0; $i < 8; $i++) {
-            $sum += intval($digits[$i]) * $weights[$i];
+        for ($i = 0; $i < 7; $i++) {
+            $sum += intval($normalized8[$i]) * $weights[$i];
         }
 
-        return $sum % 11;
+        $remainder = $sum % 11;
+
+        if ($remainder === 0) {
+            return $normalized8[7] === '0';
+        }
+
+        $expected = 11 - $remainder;
+
+        if ($expected === 10) {
+            return $normalized8[7] === 'A';
+        }
+
+        return $normalized8[7] === (string) $expected;
     }
 
     /**
-     * 根据前7位计算校验码, 不存在合法校验码时返回 -1.
+     * 根据前7位计算校验码字符.
+     *
+     * @return string|null 校验码 (0-9 或 A), null 表示输入无效
      */
-    protected static function calculateCheckDigit(string $first7): int
+    protected static function calculateCheckChar(string $first7)
     {
+        if (!preg_match('/^[157]\d{6}$/', $first7)) {
+            return null;
+        }
+
         $weights = [8, 7, 6, 5, 4, 3, 2];
         $sum = 0;
         for ($i = 0; $i < 7; $i++) {
@@ -78,13 +97,14 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
         }
 
         $remainder = $sum % 11;
+
         if ($remainder === 0) {
-            return 0;
+            return '0';
         }
 
         $check = 11 - $remainder;
 
-        return $check <= 9 ? $check : -1;
+        return $check === 10 ? 'A' : (string) $check;
     }
 
     /**
@@ -133,22 +153,22 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
 
         // 最后一位是校验码位, 可以直接计算
         if ($pos === 7 && $index === count($positions) - 1) {
-            $check = static::calculateCheckDigit(substr($code, 0, 7));
-            if ($check >= 0) {
-                $code[7] = (string) $check;
+            $check = static::calculateCheckChar(substr($code, 0, 7));
+            if ($check !== null) {
+                $code[7] = $check;
                 yield $code;
             }
             return;
         }
 
         if ($pos === 0) {
-            $candidates = [1, 5, 7];
+            $candidates = ['1', '5', '7'];
         } else {
-            $candidates = range(0, 9);
+            $candidates = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         }
 
         foreach ($candidates as $digit) {
-            $code[$pos] = (string) $digit;
+            $code[$pos] = $digit;
             yield from static::expand($code, $positions, $index + 1);
         }
     }
