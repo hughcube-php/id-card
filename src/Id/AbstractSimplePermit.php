@@ -1,12 +1,12 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\DocumentInterface;
-use HughCube\IdCard\Document\Concerns\CartesianProduct;
+use HughCube\IdCard\Contract\IdInterface;
+use HughCube\IdCard\Id\Concerns\CartesianProduct;
 
-abstract class AbstractSimplePermit implements DocumentInterface
+abstract class AbstractSimplePermit implements IdInterface
 {
     use CartesianProduct;
 
@@ -19,6 +19,8 @@ abstract class AbstractSimplePermit implements DocumentInterface
     {
         $this->code = $code;
     }
+
+    abstract public function getType(): string;
 
     public function getCode(): string
     {
@@ -61,6 +63,20 @@ abstract class AbstractSimplePermit implements DocumentInterface
     public function isValid(int $mode = 0): bool
     {
         return (bool) preg_match(static::getPattern(), $this->code);
+    }
+
+    /**
+     * 通用掩码: 保留前3后2, 中间用*替换.
+     */
+    public function mask(): ?string
+    {
+        $code = $this->code;
+        $len = strlen($code);
+        if ($len < 6) {
+            return null;
+        }
+
+        return substr($code, 0, 3) . str_repeat('*', $len - 5) . substr($code, -2);
     }
 
     /**

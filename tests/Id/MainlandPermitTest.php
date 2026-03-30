@@ -1,18 +1,16 @@
 <?php
 
-namespace HughCube\IdCard\Tests\Document;
+namespace HughCube\IdCard\Tests\Id;
 
-use HughCube\IdCard\Contract\DocumentInterface;
+use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Contract\MainlandIssuedInterface;
-use HughCube\IdCard\Document\MainlandToHkMoPermit;
-use HughCube\IdCard\Document\MainlandToTwPermit;
+use HughCube\IdCard\Id\MainlandToHkMoPermit;
+use HughCube\IdCard\Id\MainlandToTwPermit;
+use HughCube\IdCard\IdType;
 use PHPUnit\Framework\TestCase;
 
 class MainlandPermitTest extends TestCase
 {
-    /**
-     * MainlandToHkMoPermit: 有效格式 - 卡式(C).
-     */
     public function testHkMoValidC()
     {
         $permit = new MainlandToHkMoPermit('C12345678');
@@ -20,9 +18,6 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('C12345678', $permit->getCode());
     }
 
-    /**
-     * MainlandToHkMoPermit: 有效格式 - 本式(W).
-     */
     public function testHkMoValidW()
     {
         $permit = new MainlandToHkMoPermit('W12345678');
@@ -30,9 +25,6 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('W12345678', $permit->getCode());
     }
 
-    /**
-     * MainlandToHkMoPermit: 小写字母也合法.
-     */
     public function testHkMoValidLowerCase()
     {
         $permit = new MainlandToHkMoPermit('c12345678');
@@ -42,9 +34,6 @@ class MainlandPermitTest extends TestCase
         $this->assertTrue($permit->isValid());
     }
 
-    /**
-     * MainlandToHkMoPermit: 无效格式 - 字母错误.
-     */
     public function testHkMoInvalidLetter()
     {
         $permit = new MainlandToHkMoPermit('H12345678');
@@ -54,9 +43,6 @@ class MainlandPermitTest extends TestCase
         $this->assertFalse($permit->isValid());
     }
 
-    /**
-     * MainlandToHkMoPermit: 新版格式 C + 字母 + 7位数字 (2018年12月后).
-     */
     public function testHkMoValidNewFormat()
     {
         $permit = new MainlandToHkMoPermit('CA1234567');
@@ -69,9 +55,6 @@ class MainlandPermitTest extends TestCase
         $this->assertTrue($permit->isValid());
     }
 
-    /**
-     * MainlandToHkMoPermit: 新版格式不允许 I 和 O.
-     */
     public function testHkMoNewFormatExcludesIO()
     {
         $permit = new MainlandToHkMoPermit('CI1234567');
@@ -81,9 +64,6 @@ class MainlandPermitTest extends TestCase
         $this->assertFalse($permit->isValid());
     }
 
-    /**
-     * MainlandToHkMoPermit: 无效格式 - 长度错误.
-     */
     public function testHkMoInvalidLength()
     {
         $permit = new MainlandToHkMoPermit('C1234567');
@@ -93,9 +73,6 @@ class MainlandPermitTest extends TestCase
         $this->assertFalse($permit->isValid());
     }
 
-    /**
-     * MainlandToHkMoPermit: complete 最后一位通配符应产出10个结果.
-     */
     public function testHkMoCompleteLastWildcard()
     {
         $results = iterator_to_array(MainlandToHkMoPermit::complete('C1234567*'));
@@ -107,9 +84,6 @@ class MainlandPermitTest extends TestCase
         }
     }
 
-    /**
-     * MainlandToHkMoPermit: complete 字母位通配符应展开为 C 和 W.
-     */
     public function testHkMoCompleteLetterWildcard()
     {
         $results = iterator_to_array(MainlandToHkMoPermit::complete('*12345678'));
@@ -118,19 +92,13 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('W12345678', $results[1]);
     }
 
-    /**
-     * MainlandToHkMoPermit: instanceof 检查.
-     */
     public function testHkMoInstanceOf()
     {
         $permit = new MainlandToHkMoPermit('C12345678');
-        $this->assertInstanceOf(DocumentInterface::class, $permit);
+        $this->assertInstanceOf(IdInterface::class, $permit);
         $this->assertInstanceOf(MainlandIssuedInterface::class, $permit);
     }
 
-    /**
-     * MainlandToTwPermit: 有效格式 - 卡式(L).
-     */
     public function testTwValidL()
     {
         $permit = new MainlandToTwPermit('L12345678');
@@ -138,9 +106,6 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('L12345678', $permit->getCode());
     }
 
-    /**
-     * MainlandToTwPermit: 有效格式 - 本式(T).
-     */
     public function testTwValidT()
     {
         $permit = new MainlandToTwPermit('T12345678');
@@ -148,9 +113,6 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('T12345678', $permit->getCode());
     }
 
-    /**
-     * MainlandToTwPermit: 小写字母也合法.
-     */
     public function testTwValidLowerCase()
     {
         $permit = new MainlandToTwPermit('l12345678');
@@ -160,9 +122,6 @@ class MainlandPermitTest extends TestCase
         $this->assertTrue($permit->isValid());
     }
 
-    /**
-     * MainlandToTwPermit: 无效格式 - 字母错误.
-     */
     public function testTwInvalidLetter()
     {
         $permit = new MainlandToTwPermit('H12345678');
@@ -172,9 +131,6 @@ class MainlandPermitTest extends TestCase
         $this->assertFalse($permit->isValid());
     }
 
-    /**
-     * MainlandToTwPermit: 无效格式 - 长度错误.
-     */
     public function testTwInvalidLength()
     {
         $permit = new MainlandToTwPermit('L1234567');
@@ -187,9 +143,6 @@ class MainlandPermitTest extends TestCase
         $this->assertFalse($permit->isValid());
     }
 
-    /**
-     * MainlandToTwPermit: complete 最后一位通配符应产出10个结果.
-     */
     public function testTwCompleteLastWildcard()
     {
         $results = iterator_to_array(MainlandToTwPermit::complete('L1234567*'));
@@ -201,9 +154,6 @@ class MainlandPermitTest extends TestCase
         }
     }
 
-    /**
-     * MainlandToTwPermit: complete 字母位通配符应展开为 L 和 T.
-     */
     public function testTwCompleteLetterWildcard()
     {
         $results = iterator_to_array(MainlandToTwPermit::complete('*12345678'));
@@ -212,13 +162,34 @@ class MainlandPermitTest extends TestCase
         $this->assertSame('T12345678', $results[1]);
     }
 
-    /**
-     * MainlandToTwPermit: instanceof 检查.
-     */
     public function testTwInstanceOf()
     {
         $permit = new MainlandToTwPermit('L12345678');
-        $this->assertInstanceOf(DocumentInterface::class, $permit);
+        $this->assertInstanceOf(IdInterface::class, $permit);
         $this->assertInstanceOf(MainlandIssuedInterface::class, $permit);
+    }
+
+    public function test_hkmo_get_type()
+    {
+        $permit = new MainlandToHkMoPermit('C12345678');
+        $this->assertSame(IdType::MAINLAND_TO_HK_MO_PERMIT, $permit->getType());
+    }
+
+    public function test_tw_get_type()
+    {
+        $permit = new MainlandToTwPermit('L12345678');
+        $this->assertSame(IdType::MAINLAND_TO_TW_PERMIT, $permit->getType());
+    }
+
+    public function test_hkmo_mask()
+    {
+        $permit = new MainlandToHkMoPermit('C12345678');
+        $this->assertSame('C12****78', $permit->mask());
+    }
+
+    public function test_tw_mask()
+    {
+        $permit = new MainlandToTwPermit('L12345678');
+        $this->assertSame('L12****78', $permit->mask());
     }
 }

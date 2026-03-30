@@ -1,23 +1,29 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
+use HughCube\IdCard\Contract\HongKongIssuedInterface;
+use HughCube\IdCard\IdType;
 
-class MoToMainlandPermit extends AbstractSimplePermit implements MacauIssuedInterface
+class HkToMainlandPermit extends AbstractSimplePermit implements HongKongIssuedInterface
 {
+    public function getType(): string
+    {
+        return IdType::HK_TO_MAINLAND_PERMIT;
+    }
+
     protected static function getValidPrefixes(): array
     {
-        return ['M'];
+        return ['H'];
     }
 
     /**
-     * 支持9位(核心号 M12345678)和11位(完整号 M1234567890, 末2位换证次数).
+     * 支持9位(核心号 H12345678)和11位(完整号 H1234567890, 末2位换证次数).
      */
     protected static function getPattern(): string
     {
-        return '/^M\d{8}(\d{2})?$/i';
+        return '/^H\d{8}(\d{2})?$/i';
     }
 
     /**
@@ -27,14 +33,15 @@ class MoToMainlandPermit extends AbstractSimplePermit implements MacauIssuedInte
     {
         $normalized = strtoupper($code);
 
-        if (!preg_match('/^([M*])([0-9*]{8}|[0-9*]{10})$/i', $normalized, $matches)) {
+        // 匹配 9 位或 11 位
+        if (!preg_match('/^([H*])([0-9*]{8}|[0-9*]{10})$/i', $normalized, $matches)) {
             return;
         }
 
         $letterPattern = $matches[1];
         $digitsPattern = $matches[2];
 
-        $letters = ($letterPattern === '*') ? ['M'] : [$letterPattern];
+        $letters = ($letterPattern === '*') ? ['H'] : [$letterPattern];
 
         $digitLen = strlen($digitsPattern);
         $digitChars = [];

@@ -1,13 +1,14 @@
 <?php
 
-namespace HughCube\IdCard\Tests\Document;
+namespace HughCube\IdCard\Tests\Id;
 
 use HughCube\IdCard\Contract\AreaAwareInterface;
 use HughCube\IdCard\Contract\BirthdayAwareInterface;
-use HughCube\IdCard\Contract\DocumentInterface;
 use HughCube\IdCard\Contract\GenderAwareInterface;
+use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Contract\MainlandIssuedInterface;
-use HughCube\IdCard\Document\MainlandId;
+use HughCube\IdCard\Id\MainlandId;
+use HughCube\IdCard\IdType;
 use HughCube\IdCard\Enum\GenderEnum;
 use PHPUnit\Framework\TestCase;
 
@@ -131,7 +132,6 @@ class MainlandIdTest extends TestCase
         $this->assertContains('120112196405046337', $results);
         $this->assertGreaterThan(1, count($results));
 
-        // 所有结果都应该是合法身份证号
         foreach ($results as $code) {
             $id = new MainlandId($code);
             $this->assertTrue($id->isValid(), "Complete result {$code} should be valid");
@@ -144,7 +144,7 @@ class MainlandIdTest extends TestCase
     public function testInstanceOf()
     {
         $id = new MainlandId('120112196405046337');
-        $this->assertInstanceOf(DocumentInterface::class, $id);
+        $this->assertInstanceOf(IdInterface::class, $id);
         $this->assertInstanceOf(BirthdayAwareInterface::class, $id);
         $this->assertInstanceOf(GenderAwareInterface::class, $id);
         $this->assertInstanceOf(AreaAwareInterface::class, $id);
@@ -200,7 +200,6 @@ class MainlandIdTest extends TestCase
      */
     public function testIsValidMatchOnly()
     {
-        // 校验码错误但格式正确
         $id = new MainlandId('420323199306066291');
         $this->assertTrue($id->isValid(MainlandId::MODE_MATCH));
         $this->assertFalse($id->isValid(MainlandId::MODE_MATCH | MainlandId::MODE_FACTOR));
@@ -214,5 +213,27 @@ class MainlandIdTest extends TestCase
         $this->assertFalse((new MainlandId(''))->isValid());
         $this->assertFalse((new MainlandId('12345'))->isValid());
         $this->assertFalse((new MainlandId('abcdefghijklmnopqr'))->isValid());
+    }
+
+    /**
+     * 测试 getType.
+     */
+    public function test_get_type()
+    {
+        $id = new MainlandId('120112196405046337');
+        $this->assertSame(IdType::MAINLAND_ID, $id->getType());
+    }
+
+    /**
+     * 测试 mask.
+     */
+    public function test_mask()
+    {
+        $id = new MainlandId('120112196405046337');
+        $this->assertSame('120***********6337', $id->mask());
+
+        // 无效长度返回 null
+        $id2 = new MainlandId('12345');
+        $this->assertNull($id2->mask());
     }
 }

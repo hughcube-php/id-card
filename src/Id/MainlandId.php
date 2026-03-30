@@ -1,20 +1,21 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Carbon\Carbon;
 use Generator;
 use HughCube\IdCard\Area;
 use HughCube\IdCard\Contract\AreaAwareInterface;
 use HughCube\IdCard\Contract\BirthdayAwareInterface;
-use HughCube\IdCard\Contract\DocumentInterface;
 use HughCube\IdCard\Contract\GenderAwareInterface;
+use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\Data\AreaData;
 use HughCube\IdCard\Enum\GenderEnum;
+use HughCube\IdCard\IdType;
 
 class MainlandId implements
-    DocumentInterface,
+    IdInterface,
     BirthdayAwareInterface,
     GenderAwareInterface,
     AreaAwareInterface,
@@ -52,6 +53,11 @@ class MainlandId implements
     public function __construct(string $code)
     {
         $this->code = strtoupper($code);
+    }
+
+    public function getType(): string
+    {
+        return IdType::MAINLAND_ID;
     }
 
     public function getCode(): string
@@ -92,6 +98,19 @@ class MainlandId implements
         }
 
         return true;
+    }
+
+    /**
+     * 掩码: 保留前3位和后4位, 中间用*替换.
+     */
+    public function mask(): ?string
+    {
+        $code = $this->code;
+        if (strlen($code) !== 18) {
+            return null;
+        }
+
+        return substr($code, 0, 3) . str_repeat('*', 11) . substr($code, -4);
     }
 
     public function getBirthday(): ?Carbon
@@ -181,12 +200,10 @@ class MainlandId implements
      */
     protected static function completeRecursive(string $code, int $pos, int $mode): Generator
     {
-        // 找到下一个通配符位置
         while ($pos < 18 && $code[$pos] !== '*') {
             $pos++;
         }
 
-        // 没有更多通配符, 检查并 yield
         if ($pos >= 18) {
             $instance = new self($code);
             if ($instance->isValid()) {
@@ -201,24 +218,19 @@ class MainlandId implements
             $newCode = $code;
             $newCode[$pos] = $digit;
 
-            // 剪枝: 地区码完成后检查
             if (($mode & self::COMPLETE_AREA) && $pos < 6) {
                 $areaPos = $pos;
-                // 当地区码某一级完整时检查
                 if ($areaPos === 1) {
-                    // 省级 (2位) 完成
                     $provinceCode = substr($newCode, 0, 2) . '0000';
                     if (!AreaData::exists($provinceCode)) {
                         continue;
                     }
                 } elseif ($areaPos === 3) {
-                    // 市级 (4位) 完成
                     $cityCode = substr($newCode, 0, 4) . '00';
                     if (!AreaData::exists($cityCode)) {
                         continue;
                     }
                 } elseif ($areaPos === 5) {
-                    // 县级 (6位) 完成
                     $countyCode = substr($newCode, 0, 6);
                     if (!AreaData::exists($countyCode)) {
                         continue;
@@ -226,16 +238,13 @@ class MainlandId implements
                 }
             }
 
-            // 剪枝: 生日位完成部分检查
             if (($mode & self::COMPLETE_BIRTHDAY) && $pos >= 6 && $pos <= 13) {
                 if (!static::isBirthdayPrefixValid($newCode, $pos)) {
                     continue;
                 }
             }
 
-            // 第18位(索引17): 校验码, 直接计算
             if ($pos === 17 && ($mode & self::COMPLETE_FACTOR)) {
-                // 前17位已经确定, 直接计算正确的校验码
                 $check = static::calculateCheckDigit($newCode);
                 $newCode[17] = $check;
                 $instance = new self($newCode);
@@ -249,15 +258,10 @@ class MainlandId implements
         }
     }
 
-    /**
-     * 获取某一位的候选值.
-     */
     protected static function getCandidates(string $code, int $pos, int $mode): array
     {
-        // 第18位(索引17)
         if ($pos === 17) {
             if ($mode & self::COMPLETE_FACTOR) {
-                // 如果前17位都确定了, 只返回正确的校验码
                 $hasStar = false;
                 for ($i = 0; $i < 17; $i++) {
                     if ($code[$i] === '*') {
@@ -272,61 +276,47 @@ class MainlandId implements
             return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X'];
         }
 
-        // 前17位只能是数字
         return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     }
 
-    /**
-     * 检查生日前缀是否可能合法.
-     */
     protected static function isBirthdayPrefixValid(string $code, int $pos): bool
     {
-        // 年份 (位置 6-9)
         if ($pos === 9) {
-            // 年份4位完整
             $year = (int) substr($code, 6, 4);
             $currentYear = (int) date('Y');
             if ($year < 1900 || $year > $currentYear) {
                 return false;
             }
         } elseif ($pos === 6) {
-            // 年份第1位: 只能是1或2
             $d = $code[6];
             if ($d !== '1' && $d !== '2') {
                 return false;
             }
         } elseif ($pos === 7) {
-            // 年份前2位: 19 或 20
             $prefix = substr($code, 6, 2);
             if ($prefix !== '19' && $prefix !== '20') {
                 return false;
             }
         }
 
-        // 月份 (位置 10-11)
         if ($pos === 10) {
-            // 月份第1位: 只能是0或1
             $d = $code[10];
             if ($d !== '0' && $d !== '1') {
                 return false;
             }
         } elseif ($pos === 11) {
-            // 月份2位完整
             $month = (int) substr($code, 10, 2);
             if ($month < 1 || $month > 12) {
                 return false;
             }
         }
 
-        // 日期 (位置 12-13)
         if ($pos === 12) {
-            // 日期第1位: 只能是0,1,2,3
             $d = $code[12];
             if ($d !== '0' && $d !== '1' && $d !== '2' && $d !== '3') {
                 return false;
             }
         } elseif ($pos === 13) {
-            // 日期2位完整, 做完整校验
             $year = (int) substr($code, 6, 4);
             $month = (int) substr($code, 10, 2);
             $day = (int) substr($code, 12, 2);
@@ -338,9 +328,6 @@ class MainlandId implements
         return true;
     }
 
-    /**
-     * 计算校验码.
-     */
     protected static function calculateCheckDigit(string $code): string
     {
         $weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];

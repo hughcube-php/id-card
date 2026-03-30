@@ -1,12 +1,18 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
 use HughCube\IdCard\Contract\MainlandIssuedInterface;
+use HughCube\IdCard\IdType;
 
 class MainlandToHkMoPermit extends AbstractSimplePermit implements MainlandIssuedInterface
 {
+    public function getType(): string
+    {
+        return IdType::MAINLAND_TO_HK_MO_PERMIT;
+    }
+
     protected static function getValidPrefixes(): array
     {
         return ['C', 'W'];

@@ -1,6 +1,6 @@
 <?php
 
-namespace HughCube\IdCard\Document\Concerns;
+namespace HughCube\IdCard\Id\Concerns;
 
 use Generator;
 

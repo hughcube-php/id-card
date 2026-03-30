@@ -9,7 +9,7 @@
 namespace HughCube\IdCard;
 
 use Carbon\Carbon;
-use HughCube\IdCard\Document\MainlandId;
+use HughCube\IdCard\Id\MainlandId;
 
 /**
  * @deprecated 请使用 Document\MainlandId 代替

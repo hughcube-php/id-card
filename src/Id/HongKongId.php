@@ -1,13 +1,14 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\DocumentInterface;
 use HughCube\IdCard\Contract\HongKongIssuedInterface;
-use HughCube\IdCard\Document\Concerns\CartesianProduct;
+use HughCube\IdCard\Contract\IdInterface;
+use HughCube\IdCard\Id\Concerns\CartesianProduct;
+use HughCube\IdCard\IdType;
 
-class HongKongId implements DocumentInterface, HongKongIssuedInterface
+class HongKongId implements IdInterface, HongKongIssuedInterface
 {
     use CartesianProduct;
 
@@ -19,6 +20,11 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
     public function __construct(string $code)
     {
         $this->code = $code;
+    }
+
+    public function getType(): string
+    {
+        return IdType::HONG_KONG_ID;
     }
 
     public function getCode(): string
@@ -60,12 +66,11 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
 
         $sum = 0;
 
-        // 字母映射: A=10, B=11, ..., Z=35, 空位=36
         if (strlen($prefix) === 2) {
             $sum += (ord($prefix[0]) - ord('A') + 10) * 9;
             $sum += (ord($prefix[1]) - ord('A') + 10) * 8;
         } else {
-            $sum += 36 * 9; // 单字母时, 首位用 space(36) 填充
+            $sum += 36 * 9;
             $sum += (ord($prefix[0]) - ord('A') + 10) * 8;
         }
 
@@ -92,13 +97,30 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
     }
 
     /**
+     * 掩码: 解析后掩码数字中间部分.
+     * 如 G123456(A) → G1****6(A), AB123456(9) → AB1****6(9)
+     */
+    public function mask(): ?string
+    {
+        $parsed = static::parse($this->code);
+        if ($parsed === null) {
+            return null;
+        }
+
+        list($prefix, $digits, $checkChar) = $parsed;
+
+        $maskedDigits = $digits[0] . str_repeat('*', 4) . $digits[5];
+
+        return $prefix . $maskedDigits . '(' . $checkChar . ')';
+    }
+
+    /**
      * @inheritDoc
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
         $normalized = strtoupper($code);
 
-        // 解析通配符模式, 匹配: prefix(1-2字母或*) + digits(6位数字或*) + 可选括号中的校验码(或*)
         if (!preg_match('/^([A-Z*]{1,2})([0-9*]{6})\(?([0-9A*])\)?$/i', $normalized, $matches)) {
             return;
         }
@@ -107,7 +129,6 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
         $digitsPattern = $matches[2];
         $checkPattern = $matches[3];
 
-        // 判断是否只有校验码位是通配符
         $onlyCheckWild = (strpos($prefixPattern, '*') === false)
             && (strpos($digitsPattern, '*') === false)
             && $checkPattern === '*';
@@ -120,7 +141,6 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
             return;
         }
 
-        // 展开所有通配符位置
         $prefixChars = [];
         for ($i = 0; $i < strlen($prefixPattern); $i++) {
             if ($prefixPattern[$i] === '*') {
@@ -146,7 +166,6 @@ class HongKongId implements DocumentInterface, HongKongIssuedInterface
             $checkChars = [$checkPattern];
         }
 
-        // 笛卡尔积遍历
         foreach (static::cartesianProduct($prefixChars) as $prefixArr) {
             $prefix = implode('', $prefixArr);
             foreach (static::cartesianProduct($digitChars) as $digitArr) {

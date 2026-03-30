@@ -1,14 +1,15 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\DocumentInterface;
 use HughCube\IdCard\Contract\GenderAwareInterface;
+use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Contract\TaiwanIssuedInterface;
-use HughCube\IdCard\Document\Concerns\CartesianProduct;
+use HughCube\IdCard\Id\Concerns\CartesianProduct;
+use HughCube\IdCard\IdType;
 
-class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedInterface
+class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterface
 {
     use CartesianProduct;
 
@@ -44,6 +45,11 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
     public function __construct(string $code)
     {
         $this->code = $code;
+    }
+
+    public function getType(): string
+    {
+        return IdType::TAIWAN_ID;
     }
 
     public function getCode(): string
@@ -108,6 +114,19 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
         return ($sum + intval($code[9])) % 10 === 0;
     }
 
+    /**
+     * 掩码: 保留前2后4, 中间用*替换.
+     */
+    public function mask(): ?string
+    {
+        $code = strtoupper($this->code);
+        if (strlen($code) !== 10) {
+            return null;
+        }
+
+        return substr($code, 0, 2) . str_repeat('*', 4) . substr($code, -4);
+    }
+
     public function getGender(): ?int
     {
         $code = strtoupper($this->code);
@@ -160,7 +179,6 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
         $digitPositions = substr($normalized, 1, 8);
         $checkPos = $normalized[9];
 
-        // 判断是否只有校验码位是通配符
         $onlyCheckWild = ($letterPos !== '*')
             && (strpos($digitPositions, '*') === false)
             && $checkPos === '*';
@@ -174,10 +192,8 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
             return;
         }
 
-        // 展开字母位
         $letters = ($letterPos === '*') ? range('A', 'Z') : [$letterPos];
 
-        // 展开8个数字位
         $digitChars = [];
         for ($i = 0; $i < 8; $i++) {
             if ($digitPositions[$i] === '*') {
@@ -187,7 +203,6 @@ class TaiwanId implements DocumentInterface, GenderAwareInterface, TaiwanIssuedI
             }
         }
 
-        // 展开校验码位
         $checkChars = ($checkPos === '*') ? range(0, 9) : [intval($checkPos)];
 
         foreach ($letters as $letter) {

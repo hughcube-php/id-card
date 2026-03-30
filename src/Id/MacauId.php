@@ -1,12 +1,13 @@
 <?php
 
-namespace HughCube\IdCard\Document;
+namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\DocumentInterface;
+use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Contract\MacauIssuedInterface;
+use HughCube\IdCard\IdType;
 
-class MacauId implements DocumentInterface, MacauIssuedInterface
+class MacauId implements IdInterface, MacauIssuedInterface
 {
     /**
      * @var string
@@ -19,6 +20,11 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
     public function __construct(string $code)
     {
         $this->code = $code;
+    }
+
+    public function getType(): string
+    {
+        return IdType::MACAU_ID;
     }
 
     /**
@@ -45,12 +51,24 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
     {
         $normalized = static::normalize($this->code);
 
-        // 前7位数字, 第8位数字或A
         if (!preg_match('/^[157]\d{6}[\dA]$/', $normalized)) {
             return false;
         }
 
         return static::verifyCheckDigit($normalized);
+    }
+
+    /**
+     * 掩码: normalize 后保留前1后2, 中间用*替换.
+     */
+    public function mask(): ?string
+    {
+        $normalized = static::normalize($this->code);
+        if (strlen($normalized) !== 8) {
+            return null;
+        }
+
+        return $normalized[0] . str_repeat('*', 5) . substr($normalized, -2);
     }
 
     /**
@@ -151,7 +169,6 @@ class MacauId implements DocumentInterface, MacauIssuedInterface
 
         $pos = $positions[$index];
 
-        // 最后一位是校验码位, 可以直接计算
         if ($pos === 7 && $index === count($positions) - 1) {
             $check = static::calculateCheckChar(substr($code, 0, 7));
             if ($check !== null) {
