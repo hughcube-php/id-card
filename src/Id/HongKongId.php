@@ -3,43 +3,42 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\HongKongIssuedInterface;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Id\Concerns\CartesianProduct;
 use HughCube\IdCard\IdType;
 
-class HongKongId implements IdInterface, HongKongIssuedInterface
+/**
+ * 香港永久性居民身份证, 香港签发, 1-2位字母前缀+6位数字+1位校验码(0-9或A).
+ */
+class HongKongId extends AbstractId
 {
-    use CartesianProduct;
-
-    /**
-     * @var string
-     */
-    protected $code;
-
-    public function __construct(string $code)
-    {
-        $this->code = $code;
-    }
-
     public function getType(): string
     {
         return IdType::HONG_KONG_ID;
     }
 
-    public function getCode(): string
+    public static function normalize(string $code): string
     {
-        return $this->code;
+        return strtoupper($code);
+    }
+
+    public static function getPattern(): string
+    {
+        return '/^([A-Z]{1,2})(\d{6})\(?([0-9A])\)?$/i';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^([A-Z*]{1,2})([0-9*]{6})\(?([0-9A*])\)?$/i';
     }
 
     /**
      * 解析香港身份证号码, 返回 [prefix, digits, checkChar] 或 null.
      *
+     * @param string $code
      * @return array|null
      */
-    protected static function parse(string $code)
+    protected static function parse(string $code): ?array
     {
-        if (!preg_match('/^([A-Z]{1,2})(\d{6})\(?([0-9A])\)?$/i', $code, $matches)) {
+        if (!preg_match(static::getPattern(), $code, $matches)) {
             return null;
         }
 
@@ -55,10 +54,10 @@ class HongKongId implements IdInterface, HongKongIssuedInterface
      *
      * @return string|null 校验码字符 (0-9 或 A), 输入无效时返回 null
      */
-    protected static function calculateCheckChar(string $prefix, string $digits)
+    protected static function calculateCheckChar(string $prefix, string $digits): ?string
     {
         $prefix = strtoupper($prefix);
-        $digits = (string) $digits;
+        $digits = (string)$digits;
 
         if (!preg_match('/^[A-Z]{1,2}$/', $prefix) || !preg_match('/^\d{6}$/', $digits)) {
             return null;
@@ -81,7 +80,7 @@ class HongKongId implements IdInterface, HongKongIssuedInterface
         $remainder = $sum % 11;
         $checkValue = (11 - $remainder) % 11;
 
-        return $checkValue === 10 ? 'A' : (string) $checkValue;
+        return $checkValue === 10 ? 'A' : (string)$checkValue;
     }
 
     public function isValid(int $mode = 0): bool
@@ -119,9 +118,9 @@ class HongKongId implements IdInterface, HongKongIssuedInterface
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
-        if (!preg_match('/^([A-Z*]{1,2})([0-9*]{6})\(?([0-9A*])\)?$/i', $normalized, $matches)) {
+        if (!preg_match(static::getCompletePattern(), $normalized, $matches)) {
             return;
         }
 
@@ -129,9 +128,7 @@ class HongKongId implements IdInterface, HongKongIssuedInterface
         $digitsPattern = $matches[2];
         $checkPattern = $matches[3];
 
-        $onlyCheckWild = (strpos($prefixPattern, '*') === false)
-            && (strpos($digitsPattern, '*') === false)
-            && $checkPattern === '*';
+        $onlyCheckWild = !str_contains($prefixPattern, '*') && !str_contains($digitsPattern, '*') && $checkPattern === '*';
 
         if ($onlyCheckWild) {
             $checkChar = static::calculateCheckChar($prefixPattern, $digitsPattern);

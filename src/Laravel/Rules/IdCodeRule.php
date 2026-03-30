@@ -15,6 +15,11 @@ class IdCodeRule implements ValidationRule, DataAwareRule
     {
     }
 
+    public static function make(string $typeField = 'id_type'): static
+    {
+        return new static($typeField);
+    }
+
     public function setData(array $data): static
     {
         $this->data = $data;

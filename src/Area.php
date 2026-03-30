@@ -12,7 +12,7 @@ use HughCube\IdCard\Data\AreaData;
 
 class Area
 {
-    protected $code;
+    protected string $code;
 
     public function __construct(string $code)
     {

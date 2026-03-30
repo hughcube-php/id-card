@@ -17,7 +17,8 @@
         "phpstan/phpstan": "*",
         "phpunit/phpunit": "*",
         "guzzlehttp/guzzle": "*",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "illuminate/validation": "^13.2"
     },
     "autoload": {
         "psr-4": {

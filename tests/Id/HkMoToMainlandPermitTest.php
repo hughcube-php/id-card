@@ -2,9 +2,7 @@
 
 namespace HughCube\IdCard\Tests\Id;
 
-use HughCube\IdCard\Contract\HongKongIssuedInterface;
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
 use HughCube\IdCard\Id\HkToMainlandPermit;
 use HughCube\IdCard\Id\MoToMainlandPermit;
 use HughCube\IdCard\IdType;
@@ -73,7 +71,6 @@ class HkMoToMainlandPermitTest extends TestCase
     {
         $permit = new HkToMainlandPermit('H12345678');
         $this->assertInstanceOf(IdInterface::class, $permit);
-        $this->assertInstanceOf(HongKongIssuedInterface::class, $permit);
     }
 
     public function testMoValidFormat()
@@ -128,7 +125,6 @@ class HkMoToMainlandPermitTest extends TestCase
     {
         $permit = new MoToMainlandPermit('M12345678');
         $this->assertInstanceOf(IdInterface::class, $permit);
-        $this->assertInstanceOf(MacauIssuedInterface::class, $permit);
     }
 
     public function test_hk_get_type()

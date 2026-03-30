@@ -3,7 +3,6 @@
 namespace HughCube\IdCard\Tests\Id;
 
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\Id\MainlandToHkMoPermit;
 use HughCube\IdCard\Id\MainlandToTwPermit;
 use HughCube\IdCard\IdType;
@@ -96,7 +95,6 @@ class MainlandPermitTest extends TestCase
     {
         $permit = new MainlandToHkMoPermit('C12345678');
         $this->assertInstanceOf(IdInterface::class, $permit);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $permit);
     }
 
     public function testTwValidL()
@@ -166,7 +164,6 @@ class MainlandPermitTest extends TestCase
     {
         $permit = new MainlandToTwPermit('L12345678');
         $this->assertInstanceOf(IdInterface::class, $permit);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $permit);
     }
 
     public function test_hkmo_get_type()

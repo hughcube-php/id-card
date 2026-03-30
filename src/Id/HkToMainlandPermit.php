@@ -3,10 +3,12 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\HongKongIssuedInterface;
 use HughCube\IdCard\IdType;
 
-class HkToMainlandPermit extends AbstractSimplePermit implements HongKongIssuedInterface
+/**
+ * 港澳居民来往内地通行证(回乡证·香港), 香港签发, H+8位数字(核心号)或H+10位数字(含换证次数).
+ */
+class HkToMainlandPermit extends AbstractSimplePermit
 {
     public function getType(): string
     {
@@ -21,9 +23,14 @@ class HkToMainlandPermit extends AbstractSimplePermit implements HongKongIssuedI
     /**
      * 支持9位(核心号 H12345678)和11位(完整号 H1234567890, 末2位换证次数).
      */
-    protected static function getPattern(): string
+    public static function getPattern(): string
     {
         return '/^H\d{8}(\d{2})?$/i';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^([H*])([0-9*]{8}|[0-9*]{10})$/i';
     }
 
     /**
@@ -31,10 +38,9 @@ class HkToMainlandPermit extends AbstractSimplePermit implements HongKongIssuedI
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
-        // 匹配 9 位或 11 位
-        if (!preg_match('/^([H*])([0-9*]{8}|[0-9*]{10})$/i', $normalized, $matches)) {
+        if (!preg_match(static::getCompletePattern(), $normalized, $matches)) {
             return;
         }
 

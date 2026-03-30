@@ -2,11 +2,7 @@
 
 namespace HughCube\IdCard\Tests\Id;
 
-use HughCube\IdCard\Contract\AreaAwareInterface;
-use HughCube\IdCard\Contract\BirthdayAwareInterface;
-use HughCube\IdCard\Contract\GenderAwareInterface;
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\Id\MainlandId;
 use HughCube\IdCard\IdType;
 use HughCube\IdCard\Enum\GenderEnum;
@@ -145,10 +141,6 @@ class MainlandIdTest extends TestCase
     {
         $id = new MainlandId('120112196405046337');
         $this->assertInstanceOf(IdInterface::class, $id);
-        $this->assertInstanceOf(BirthdayAwareInterface::class, $id);
-        $this->assertInstanceOf(GenderAwareInterface::class, $id);
-        $this->assertInstanceOf(AreaAwareInterface::class, $id);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $id);
     }
 
     /**

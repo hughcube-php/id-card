@@ -3,29 +3,12 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Id\Concerns\CartesianProduct;
 
-abstract class AbstractSimplePermit implements IdInterface
+/**
+ * 简单通行证基类, 格式为: 前缀字母 + 固定位数数字.
+ */
+abstract class AbstractSimplePermit extends AbstractId
 {
-    use CartesianProduct;
-
-    /**
-     * @var string
-     */
-    protected $code;
-
-    public function __construct(string $code)
-    {
-        $this->code = $code;
-    }
-
-    abstract public function getType(): string;
-
-    public function getCode(): string
-    {
-        return $this->code;
-    }
 
     /**
      * 返回合法的前缀字母数组, 如 ['H'] 或 ['C', 'W'].
@@ -34,18 +17,17 @@ abstract class AbstractSimplePermit implements IdInterface
      */
     abstract protected static function getValidPrefixes(): array;
 
-    /**
-     * 返回验证用正则表达式.
-     */
-    protected static function getPattern(): string
+    public static function normalize(string $code): string
+    {
+        return strtoupper($code);
+    }
+
+    public static function getPattern(): string
     {
         return '/^[' . implode('', static::getValidPrefixes()) . ']\d{8}$/i';
     }
 
-    /**
-     * 返回 complete 用正则表达式(支持通配符).
-     */
-    protected static function getCompletePattern(): string
+    public static function getCompletePattern(): string
     {
         $prefixRegex = implode('', static::getValidPrefixes());
 
@@ -84,7 +66,7 @@ abstract class AbstractSimplePermit implements IdInterface
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
         if (!preg_match(static::getCompletePattern(), $normalized, $matches)) {
             return;

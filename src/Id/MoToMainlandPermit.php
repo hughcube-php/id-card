@@ -3,10 +3,12 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
 use HughCube\IdCard\IdType;
 
-class MoToMainlandPermit extends AbstractSimplePermit implements MacauIssuedInterface
+/**
+ * 澳门居民来往内地通行证(回乡证·澳门), 澳门签发, M+8位数字(核心号)或M+10位数字(含换证次数).
+ */
+class MoToMainlandPermit extends AbstractSimplePermit
 {
     public function getType(): string
     {
@@ -21,9 +23,14 @@ class MoToMainlandPermit extends AbstractSimplePermit implements MacauIssuedInte
     /**
      * 支持9位(核心号 M12345678)和11位(完整号 M1234567890, 末2位换证次数).
      */
-    protected static function getPattern(): string
+    public static function getPattern(): string
     {
         return '/^M\d{8}(\d{2})?$/i';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^([M*])([0-9*]{8}|[0-9*]{10})$/i';
     }
 
     /**
@@ -31,9 +38,9 @@ class MoToMainlandPermit extends AbstractSimplePermit implements MacauIssuedInte
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
-        if (!preg_match('/^([M*])([0-9*]{8}|[0-9*]{10})$/i', $normalized, $matches)) {
+        if (!preg_match(static::getCompletePattern(), $normalized, $matches)) {
             return;
         }
 

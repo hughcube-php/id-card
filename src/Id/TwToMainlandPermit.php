@@ -3,33 +3,31 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\TaiwanIssuedInterface;
-use HughCube\IdCard\Id\Concerns\CartesianProduct;
 use HughCube\IdCard\IdType;
 
-class TwToMainlandPermit implements IdInterface, TaiwanIssuedInterface
+/**
+ * 台湾居民来往大陆通行证(台胞证), 台湾签发, 8位纯数字.
+ */
+class TwToMainlandPermit extends AbstractId
 {
-    use CartesianProduct;
-
-    /**
-     * @var string
-     */
-    protected $code;
-
-    public function __construct(string $code)
-    {
-        $this->code = $code;
-    }
-
     public function getType(): string
     {
         return IdType::TW_TO_MAINLAND_PERMIT;
     }
 
-    public function getCode(): string
+    public static function normalize(string $code): string
     {
-        return $this->code;
+        return $code;
+    }
+
+    public static function getPattern(): string
+    {
+        return '/^[0-9]{8}$/';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^[0-9*]{8}$/';
     }
 
     /**
@@ -37,7 +35,7 @@ class TwToMainlandPermit implements IdInterface, TaiwanIssuedInterface
      */
     public function isValid(int $mode = 0): bool
     {
-        return (bool) preg_match('/^[0-9]{8}$/', $this->code);
+        return (bool) preg_match(static::getPattern(), $this->code);
     }
 
     /**
@@ -58,7 +56,7 @@ class TwToMainlandPermit implements IdInterface, TaiwanIssuedInterface
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        if (!preg_match('/^[0-9*]{8}$/', $code)) {
+        if (!preg_match(static::getCompletePattern(), $code)) {
             return;
         }
 

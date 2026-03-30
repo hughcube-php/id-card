@@ -3,55 +3,42 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
 use HughCube\IdCard\IdType;
 
-class MacauId implements IdInterface, MacauIssuedInterface
+/**
+ * 澳门居民身份证, 澳门签发, 8位(首位1/5/7+6位数字+1位校验码), 支持斜杠和括号格式.
+ */
+class MacauId extends AbstractId
 {
-    /**
-     * @var string
-     */
-    protected $code;
-
-    /**
-     * @param string $code
-     */
-    public function __construct(string $code)
-    {
-        $this->code = $code;
-    }
-
     public function getType(): string
     {
         return IdType::MACAU_ID;
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
      * 去除斜杠和括号, 标准化.
      * 支持格式: 12345678, 1/234567/8, 1234567(8), 1234567(A)
      */
-    protected static function normalize(string $code): string
+    public static function normalize(string $code): string
     {
         return strtoupper(str_replace(['/', '(', ')'], '', $code));
     }
 
-    /**
-     * @inheritDoc
-     */
+    public static function getPattern(): string
+    {
+        return '/^[157]\d{6}[\dA]$/';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^[157*][0-9*]{6}[0-9A*]$/i';
+    }
+
     public function isValid(int $mode = 0): bool
     {
         $normalized = static::normalize($this->code);
 
-        if (!preg_match('/^[157]\d{6}[\dA]$/', $normalized)) {
+        if (!preg_match(static::getPattern(), $normalized)) {
             return false;
         }
 

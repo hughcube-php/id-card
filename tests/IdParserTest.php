@@ -2,13 +2,6 @@
 
 namespace HughCube\IdCard\Tests;
 
-use HughCube\IdCard\Contract\AreaAwareInterface;
-use HughCube\IdCard\Contract\BirthdayAwareInterface;
-use HughCube\IdCard\Contract\GenderAwareInterface;
-use HughCube\IdCard\Contract\HongKongIssuedInterface;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
-use HughCube\IdCard\Contract\TaiwanIssuedInterface;
 use HughCube\IdCard\Id\HkToMainlandPermit;
 use HughCube\IdCard\Id\HongKongId;
 use HughCube\IdCard\Id\MacauId;
@@ -28,10 +21,6 @@ class IdParserTest extends TestCase
     {
         $doc = IdParser::parse('120112196405046337');
         $this->assertInstanceOf(MainlandId::class, $doc);
-        $this->assertInstanceOf(BirthdayAwareInterface::class, $doc);
-        $this->assertInstanceOf(GenderAwareInterface::class, $doc);
-        $this->assertInstanceOf(AreaAwareInterface::class, $doc);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $doc);
     }
 
     public function test_parse_mainland_id_lowercase_x()
@@ -44,43 +33,36 @@ class IdParserTest extends TestCase
     {
         $doc = IdParser::parse('A123456789');
         $this->assertInstanceOf(TaiwanId::class, $doc);
-        $this->assertInstanceOf(GenderAwareInterface::class, $doc);
-        $this->assertInstanceOf(TaiwanIssuedInterface::class, $doc);
     }
 
     public function test_parse_hongkong_id()
     {
         $doc = IdParser::parse('G123456(A)');
         $this->assertInstanceOf(HongKongId::class, $doc);
-        $this->assertInstanceOf(HongKongIssuedInterface::class, $doc);
     }
 
     public function test_parse_macau_id()
     {
         $doc = IdParser::parse('10000003');
         $this->assertInstanceOf(MacauId::class, $doc);
-        $this->assertInstanceOf(MacauIssuedInterface::class, $doc);
     }
 
     public function test_parse_hk_to_mainland_permit()
     {
         $doc = IdParser::parse('H12345678');
         $this->assertInstanceOf(HkToMainlandPermit::class, $doc);
-        $this->assertInstanceOf(HongKongIssuedInterface::class, $doc);
     }
 
     public function test_parse_mo_to_mainland_permit()
     {
         $doc = IdParser::parse('M12345678');
         $this->assertInstanceOf(MoToMainlandPermit::class, $doc);
-        $this->assertInstanceOf(MacauIssuedInterface::class, $doc);
     }
 
     public function test_parse_mainland_to_hkmo_permit()
     {
         $doc = IdParser::parse('C12345678');
         $this->assertInstanceOf(MainlandToHkMoPermit::class, $doc);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $doc);
 
         $doc2 = IdParser::parse('W12345678');
         $this->assertInstanceOf(MainlandToHkMoPermit::class, $doc2);
@@ -90,7 +72,6 @@ class IdParserTest extends TestCase
     {
         $doc = IdParser::parse('L12345678');
         $this->assertInstanceOf(MainlandToTwPermit::class, $doc);
-        $this->assertInstanceOf(MainlandIssuedInterface::class, $doc);
 
         $doc2 = IdParser::parse('T12345678');
         $this->assertInstanceOf(MainlandToTwPermit::class, $doc2);

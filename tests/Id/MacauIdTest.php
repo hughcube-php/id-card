@@ -3,7 +3,6 @@
 namespace HughCube\IdCard\Tests\Id;
 
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MacauIssuedInterface;
 use HughCube\IdCard\Id\MacauId;
 use HughCube\IdCard\IdType;
 use PHPUnit\Framework\TestCase;
@@ -125,7 +124,6 @@ class MacauIdTest extends TestCase
     {
         $id = new MacauId('10000003');
         $this->assertInstanceOf(IdInterface::class, $id);
-        $this->assertInstanceOf(MacauIssuedInterface::class, $id);
     }
 
     public function test_get_type()

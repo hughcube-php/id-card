@@ -15,20 +15,37 @@ use HughCube\IdCard\Id\TwToMainlandPermit;
 
 class IdType
 {
+    /** 中华人民共和国居民身份证, 大陆签发, 18位 */
     const MAINLAND_ID = 'mainland_id';
+
+    /** 中华民国国民身份证(台湾身份证), 台湾签发, 1位字母+9位数字 */
     const TAIWAN_ID = 'taiwan_id';
+
+    /** 香港永久性居民身份证, 香港签发, 1-2位字母+6位数字+1位校验码 */
     const HONG_KONG_ID = 'hong_kong_id';
+
+    /** 澳门居民身份证, 澳门签发, 1位首数字(1/5/7)+6位数字+1位校验码 */
     const MACAU_ID = 'macau_id';
+
+    /** 港澳居民来往内地通行证(回乡证), 香港签发, H+8位数字(或11位) */
     const HK_TO_MAINLAND_PERMIT = 'hk_to_mainland_permit';
+
+    /** 澳门居民来往内地通行证(回乡证), 澳门签发, M+8位数字(或11位) */
     const MO_TO_MAINLAND_PERMIT = 'mo_to_mainland_permit';
+
+    /** 往来港澳通行证, 大陆签发, C/W+8位数字 或 C+字母+7位数字(新版) */
     const MAINLAND_TO_HK_MO_PERMIT = 'mainland_to_hk_mo_permit';
+
+    /** 大陆居民往来台湾通行证, 大陆签发, L/T+8位数字 */
     const MAINLAND_TO_TW_PERMIT = 'mainland_to_tw_permit';
+
+    /** 台湾居民来往大陆通行证(台胞证), 台湾签发, 8位纯数字 */
     const TW_TO_MAINLAND_PERMIT = 'tw_to_mainland_permit';
 
     /**
      * @var array<string, string>
      */
-    protected static $titles = [
+    protected static array $titles = [
         self::MAINLAND_ID => '居民身份证',
         self::TAIWAN_ID => '台湾身份证',
         self::HONG_KONG_ID => '香港身份证',
@@ -43,7 +60,7 @@ class IdType
     /**
      * @var array<string, class-string<IdInterface>>
      */
-    protected static $classMap = [
+    protected static array $classMap = [
         self::MAINLAND_ID => MainlandId::class,
         self::TAIWAN_ID => TaiwanId::class,
         self::HONG_KONG_ID => HongKongId::class,

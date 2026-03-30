@@ -2,10 +2,12 @@
 
 namespace HughCube\IdCard\Id;
 
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\IdType;
 
-class MainlandToTwPermit extends AbstractSimplePermit implements MainlandIssuedInterface
+/**
+ * 大陆居民往来台湾通行证, 大陆签发, L/T+8位数字.
+ */
+class MainlandToTwPermit extends AbstractSimplePermit
 {
     public function getType(): string
     {

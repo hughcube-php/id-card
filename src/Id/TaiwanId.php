@@ -3,16 +3,13 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\GenderAwareInterface;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\TaiwanIssuedInterface;
-use HughCube\IdCard\Id\Concerns\CartesianProduct;
 use HughCube\IdCard\IdType;
 
-class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterface
+/**
+ * 中华民国国民身份证(台湾身份证), 台湾签发, 10位(1位地区字母+1位性别码+7位流水号+1位校验码).
+ */
+class TaiwanId extends AbstractId
 {
-    use CartesianProduct;
-
     /**
      * 字母对应数字映射表.
      */
@@ -37,24 +34,24 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
         'Y' => '阳明山', 'Z' => '连江县',
     ];
 
-    /**
-     * @var string
-     */
-    protected $code;
-
-    public function __construct(string $code)
-    {
-        $this->code = $code;
-    }
-
     public function getType(): string
     {
         return IdType::TAIWAN_ID;
     }
 
-    public function getCode(): string
+    public static function normalize(string $code): string
     {
-        return $this->code;
+        return strtoupper($code);
+    }
+
+    public static function getPattern(): string
+    {
+        return '/^[A-Z]\d{9}$/i';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^[A-Z*][0-9*]{9}$/i';
     }
 
     /**
@@ -100,9 +97,9 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
 
     public function isValid(int $mode = 0): bool
     {
-        $code = strtoupper($this->code);
+        $code = static::normalize($this->code);
 
-        if (!preg_match('/^[A-Z]\d{9}$/', $code)) {
+        if (!preg_match(static::getPattern(), $code)) {
             return false;
         }
 
@@ -119,7 +116,7 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
      */
     public function mask(): ?string
     {
-        $code = strtoupper($this->code);
+        $code = static::normalize($this->code);
         if (strlen($code) !== 10) {
             return null;
         }
@@ -129,9 +126,9 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
 
     public function getGender(): ?int
     {
-        $code = strtoupper($this->code);
+        $code = static::normalize($this->code);
 
-        if (!preg_match('/^[A-Z]\d{9}$/', $code)) {
+        if (!preg_match(static::getPattern(), $code)) {
             return null;
         }
 
@@ -153,7 +150,7 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
      */
     public function getRegionCode(): ?string
     {
-        $code = strtoupper($this->code);
+        $code = static::normalize($this->code);
 
         if (!preg_match('/^[A-Z]/', $code)) {
             return null;
@@ -161,7 +158,7 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
 
         $letter = $code[0];
 
-        return isset(static::$regionMap[$letter]) ? static::$regionMap[$letter] : null;
+        return static::$regionMap[$letter] ?? null;
     }
 
     /**
@@ -169,9 +166,9 @@ class TaiwanId implements IdInterface, GenderAwareInterface, TaiwanIssuedInterfa
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
-        if (!preg_match('/^[A-Z*][0-9*]{9}$/i', $normalized)) {
+        if (!preg_match(static::getCompletePattern(), $normalized)) {
             return;
         }
 

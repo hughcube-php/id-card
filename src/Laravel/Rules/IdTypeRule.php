@@ -8,6 +8,11 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class IdTypeRule implements ValidationRule
 {
+    public static function make(): static
+    {
+        return new static();
+    }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value) || !IdType::has($value)) {

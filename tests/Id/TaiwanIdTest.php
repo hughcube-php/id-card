@@ -2,9 +2,7 @@
 
 namespace HughCube\IdCard\Tests\Id;
 
-use HughCube\IdCard\Contract\GenderAwareInterface;
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\TaiwanIssuedInterface;
 use HughCube\IdCard\Id\TaiwanId;
 use HughCube\IdCard\IdType;
 use PHPUnit\Framework\TestCase;
@@ -86,8 +84,6 @@ class TaiwanIdTest extends TestCase
     {
         $id = new TaiwanId('A123456789');
         $this->assertInstanceOf(IdInterface::class, $id);
-        $this->assertInstanceOf(GenderAwareInterface::class, $id);
-        $this->assertInstanceOf(TaiwanIssuedInterface::class, $id);
     }
 
     public function test_get_type()

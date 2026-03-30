@@ -3,7 +3,6 @@
 namespace HughCube\IdCard\Tests\Id;
 
 use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\TaiwanIssuedInterface;
 use HughCube\IdCard\Id\TwToMainlandPermit;
 use HughCube\IdCard\IdType;
 use PHPUnit\Framework\TestCase;
@@ -76,7 +75,6 @@ class TwToMainlandPermitTest extends TestCase
     {
         $permit = new TwToMainlandPermit('12345678');
         $this->assertInstanceOf(IdInterface::class, $permit);
-        $this->assertInstanceOf(TaiwanIssuedInterface::class, $permit);
     }
 
     /**

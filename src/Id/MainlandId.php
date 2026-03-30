@@ -5,21 +5,14 @@ namespace HughCube\IdCard\Id;
 use Carbon\Carbon;
 use Generator;
 use HughCube\IdCard\Area;
-use HughCube\IdCard\Contract\AreaAwareInterface;
-use HughCube\IdCard\Contract\BirthdayAwareInterface;
-use HughCube\IdCard\Contract\GenderAwareInterface;
-use HughCube\IdCard\Contract\IdInterface;
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\Data\AreaData;
 use HughCube\IdCard\Enum\GenderEnum;
 use HughCube\IdCard\IdType;
 
-class MainlandId implements
-    IdInterface,
-    BirthdayAwareInterface,
-    GenderAwareInterface,
-    AreaAwareInterface,
-    MainlandIssuedInterface
+/**
+ * 中华人民共和国居民身份证(二代), 大陆签发, 18位(6位地区码+8位出生日期+3位顺序码+1位校验码).
+ */
+class MainlandId extends AbstractId
 {
     const MODE_MATCH    = 1 << 0;
     const MODE_FACTOR   = 1 << 1;
@@ -45,14 +38,9 @@ class MainlandId implements
     const COMPLETE_AREA = 1 << 2;
     const COMPLETE_DEFAULT = self::COMPLETE_FACTOR | self::COMPLETE_BIRTHDAY;
 
-    /**
-     * @var string
-     */
-    protected $code;
-
     public function __construct(string $code)
     {
-        $this->code = strtoupper($code);
+        parent::__construct(static::normalize($code));
     }
 
     public function getType(): string
@@ -60,16 +48,26 @@ class MainlandId implements
         return IdType::MAINLAND_ID;
     }
 
-    public function getCode(): string
+    public static function normalize(string $code): string
     {
-        return $this->code;
+        return strtoupper($code);
+    }
+
+    public static function getPattern(): string
+    {
+        return '/^\d{17}[\dX]$/';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^[0-9*]{17}[0-9X*]$/i';
     }
 
     public function isValid(int $mode = self::MODE_DEFAULT): bool
     {
         $code = $this->code;
 
-        if (($mode & self::MODE_MATCH) && 1 !== preg_match('/^\d{17}[\dX]$/', $code)) {
+        if (($mode & self::MODE_MATCH) && 1 !== preg_match(static::getPattern(), $code)) {
             return false;
         }
 
@@ -141,22 +139,22 @@ class MainlandId implements
         return GenderEnum::has($value) ? $value : null;
     }
 
-    public function getProvince(): Area
+    public function getProvince(): ?Area
     {
         return new Area(substr($this->code, 0, 2));
     }
 
-    public function getCity(): Area
+    public function getCity(): ?Area
     {
         return new Area(substr($this->code, 0, 4));
     }
 
-    public function getCounty(): Area
+    public function getCounty(): ?Area
     {
         return new Area(substr($this->code, 0, 6));
     }
 
-    public function getAreaDescribe(): string
+    public function getAreaDescribe(): ?string
     {
         $parts = [];
 
@@ -188,7 +186,7 @@ class MainlandId implements
      */
     public static function complete(string $code, int $mode = self::COMPLETE_DEFAULT): Generator
     {
-        $code = strtoupper($code);
+        $code = static::normalize($code);
 
         yield from static::completeRecursive($code, 0, $mode);
     }

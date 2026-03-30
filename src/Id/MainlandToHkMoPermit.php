@@ -3,10 +3,13 @@
 namespace HughCube\IdCard\Id;
 
 use Generator;
-use HughCube\IdCard\Contract\MainlandIssuedInterface;
 use HughCube\IdCard\IdType;
 
-class MainlandToHkMoPermit extends AbstractSimplePermit implements MainlandIssuedInterface
+/**
+ * 往来港澳通行证, 大陆签发.
+ * 旧版: C/W+8位数字; 新版(2018.12起): C+字母(I/O除外)+7位数字.
+ */
+class MainlandToHkMoPermit extends AbstractSimplePermit
 {
     public function getType(): string
     {
@@ -24,9 +27,14 @@ class MainlandToHkMoPermit extends AbstractSimplePermit implements MainlandIssue
      * - 新版(2018年12月后): C + 1位字母(I/O除外) + 7位数字 (如 CA1234567)
      * - 本式(已失效): W + 8位数字
      */
-    protected static function getPattern(): string
+    public static function getPattern(): string
     {
         return '/^(C\d{8}|C[A-HJ-NP-Z]\d{7}|W\d{8})$/i';
+    }
+
+    public static function getCompletePattern(): string
+    {
+        return '/^([CW*])([0-9*]{8})$|^(C)([A-HJ-NP-Z*])([0-9*]{7})$/i';
     }
 
     /**
@@ -34,7 +42,7 @@ class MainlandToHkMoPermit extends AbstractSimplePermit implements MainlandIssue
      */
     public static function complete(string $code, int $mode = 0): Generator
     {
-        $normalized = strtoupper($code);
+        $normalized = static::normalize($code);
 
         // 旧版 C/W + 8位数字
         if (preg_match('/^([CW*])([0-9*]{8})$/i', $normalized, $matches)) {

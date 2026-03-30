@@ -2,7 +2,6 @@
 
 namespace HughCube\IdCard\Tests\Id;
 
-use HughCube\IdCard\Contract\HongKongIssuedInterface;
 use HughCube\IdCard\Contract\IdInterface;
 use HughCube\IdCard\Id\HongKongId;
 use HughCube\IdCard\IdType;
@@ -73,7 +72,6 @@ class HongKongIdTest extends TestCase
     {
         $id = new HongKongId('G123456(A)');
         $this->assertInstanceOf(IdInterface::class, $id);
-        $this->assertInstanceOf(HongKongIssuedInterface::class, $id);
     }
 
     public function testInvalidFormat()
