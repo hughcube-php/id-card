@@ -9,15 +9,24 @@
 namespace HughCube\IdCard;
 
 use Carbon\Carbon;
-use HughCube\IdCard\Enum\GenderEnum;
+use HughCube\IdCard\Document\MainlandId;
 
+/**
+ * @deprecated 请使用 Document\MainlandId 代替
+ */
 class Id
 {
     protected $code;
 
+    /**
+     * @var MainlandId
+     */
+    protected $mainland;
+
     public function __construct($code)
     {
         $this->code = $code;
+        $this->mainland = new MainlandId(strtoupper(strval($code)));
     }
 
     public static function parse($code): Id
@@ -33,7 +42,7 @@ class Id
 
     public function getValidCode(): string
     {
-        return strtoupper(strval($this->getCode()));
+        return $this->mainland->getCode();
     }
 
     /**
@@ -47,77 +56,36 @@ class Id
         return $checker->isValid($mode);
     }
 
-    /**
-     * 身份证规则二, 前两位是省
-     */
     public function getProvince(): Area
     {
-        return new Area(substr($this->getValidCode(), 0, 2));
+        return $this->mainland->getProvince();
     }
 
-    /**
-     * 身份证规则二, 前四位是市
-     */
     public function getCity(): Area
     {
-        return new Area(substr($this->getValidCode(), 0, 4));
+        return $this->mainland->getCity();
     }
 
-    /**
-     * 身份证规则二, 前四位是县
-     */
     public function getCounty(): Area
     {
-        return new Area(substr($this->getValidCode(), 0, 6));
+        return $this->mainland->getCounty();
     }
 
     public function getAreaDescribe(): string
     {
-        $province = $this->getProvince();
-        $city = $this->getCity();
-        $county = $this->getCounty();
-
-        $describe = '';
-
-        if ($province->isExists()) {
-            $describe = sprintf('%s%s', $describe, $province->getName());
-        }
-
-        if ($city->isExists() && (!$county->isExists() || !$city->isPH())) {
-            $describe = sprintf('%s%s', $describe, $city->getName());
-        }
-
-        if ($county->isExists()) {
-            $describe = sprintf('%s%s', $describe, $county->getName());
-        }
-
-        return $describe;
+        return $this->mainland->getAreaDescribe();
     }
 
     public function getBirthday(): ?Carbon
     {
-        $code = $this->getValidCode();
-
-        if (!checkdate(
-            $m = substr($code, 10, 2),
-            $d = substr($code, 12, 2),
-            $y = substr($code, 6, 4)
-        )) {
-            return null;
-        }
-
-        return Carbon::parse(sprintf('%s-%s-%s 00:00:00.000', $y, $m, $d))->startOfDay();
+        return $this->mainland->getBirthday();
     }
 
     /**
-     * @see GenderEnum
+     * @see \HughCube\IdCard\Enum\GenderEnum
      */
     public function getGender(): ?int
     {
-        $code = substr($this->getValidCode(), 16, 1);
-
-        $gender = intval($code) % 2;
-
-        return (false !== $code && GenderEnum::has($gender)) ? $gender : null;
+        return $this->mainland->getGender();
     }
 }
