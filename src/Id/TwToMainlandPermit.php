@@ -48,7 +48,7 @@ class TwToMainlandPermit extends AbstractId
             return null;
         }
 
-        return substr($code, 0, 2) . '****' . substr($code, -2);
+        return substr($code, 0, 2).'****'.substr($code, -2);
     }
 
     /**

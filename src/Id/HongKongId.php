@@ -34,6 +34,7 @@ class HongKongId extends AbstractId
      * 解析香港身份证号码, 返回 [prefix, digits, checkChar] 或 null.
      *
      * @param string $code
+     *
      * @return array|null
      */
     protected static function parse(string $code): ?array
@@ -57,7 +58,7 @@ class HongKongId extends AbstractId
     protected static function calculateCheckChar(string $prefix, string $digits): ?string
     {
         $prefix = strtoupper($prefix);
-        $digits = (string)$digits;
+        $digits = (string) $digits;
 
         if (!preg_match('/^[A-Z]{1,2}$/', $prefix) || !preg_match('/^\d{6}$/', $digits)) {
             return null;
@@ -80,7 +81,7 @@ class HongKongId extends AbstractId
         $remainder = $sum % 11;
         $checkValue = (11 - $remainder) % 11;
 
-        return $checkValue === 10 ? 'A' : (string)$checkValue;
+        return $checkValue === 10 ? 'A' : (string) $checkValue;
     }
 
     public function isValid(int $mode = 0): bool
@@ -97,7 +98,7 @@ class HongKongId extends AbstractId
 
     /**
      * 掩码: 解析后掩码数字中间部分.
-     * 如 G123456(A) → G1****6(A), AB123456(9) → AB1****6(9)
+     * 如 G123456(A) → G1****6(A), AB123456(9) → AB1****6(9).
      */
     public function mask(): ?string
     {
@@ -108,9 +109,9 @@ class HongKongId extends AbstractId
 
         list($prefix, $digits, $checkChar) = $parsed;
 
-        $maskedDigits = $digits[0] . str_repeat('*', 4) . $digits[5];
+        $maskedDigits = $digits[0].str_repeat('*', 4).$digits[5];
 
-        return $prefix . $maskedDigits . '(' . $checkChar . ')';
+        return $prefix.$maskedDigits.'('.$checkChar.')';
     }
 
     /**
@@ -135,8 +136,9 @@ class HongKongId extends AbstractId
         if ($onlyCheckWild) {
             $checkChar = static::calculateCheckChar($prefixPattern, $digitsPattern);
             if ($checkChar !== null) {
-                yield $prefixPattern . $digitsPattern . '(' . $checkChar . ')';
+                yield $prefixPattern.$digitsPattern.'('.$checkChar.')';
             }
+
             return;
         }
 
@@ -170,7 +172,7 @@ class HongKongId extends AbstractId
             foreach (static::cartesianProduct($digitChars) as $digitArr) {
                 $digits = implode('', $digitArr);
                 foreach ($checkChars as $check) {
-                    $candidate = new self($prefix . $digits . '(' . $check . ')');
+                    $candidate = new self($prefix.$digits.'('.$check.')');
                     if ($candidate->isValid()) {
                         yield $candidate->getCode();
                     }

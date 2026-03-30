@@ -61,7 +61,7 @@ class HkToMainlandPermit extends AbstractSimplePermit
 
         foreach ($letters as $letter) {
             foreach (static::cartesianProduct($digitChars) as $digitArr) {
-                yield $letter . implode('', $digitArr);
+                yield $letter.implode('', $digitArr);
             }
         }
     }

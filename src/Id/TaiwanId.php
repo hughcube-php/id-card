@@ -121,7 +121,7 @@ class TaiwanId extends AbstractId
             return null;
         }
 
-        return substr($code, 0, 2) . str_repeat('*', 4) . substr($code, -4);
+        return substr($code, 0, 2).str_repeat('*', 4).substr($code, -4);
     }
 
     public function getGender(): ?int
@@ -179,11 +179,12 @@ class TaiwanId extends AbstractId
         $onlyCheckWild = ($letterPos !== '*') && (strpos($digitPositions, '*') === false) && $checkPos === '*';
 
         if ($onlyCheckWild) {
-            $first9 = $letterPos . $digitPositions;
+            $first9 = $letterPos.$digitPositions;
             $checkDigit = static::calculateCheckDigit($first9);
             if ($checkDigit !== null) {
-                yield $first9 . $checkDigit;
+                yield $first9.$checkDigit;
             }
+
             return;
         }
 
@@ -205,13 +206,13 @@ class TaiwanId extends AbstractId
                 $digits = implode('', $digitArr);
 
                 if ($checkPos === '*') {
-                    $checkDigit = static::calculateCheckDigit($letter . $digits);
+                    $checkDigit = static::calculateCheckDigit($letter.$digits);
                     if ($checkDigit !== null) {
-                        yield $letter . $digits . $checkDigit;
+                        yield $letter.$digits.$checkDigit;
                     }
                 } else {
                     foreach ($checkChars as $check) {
-                        $candidate = new self($letter . $digits . $check);
+                        $candidate = new self($letter.$digits.$check);
                         if ($candidate->isValid()) {
                             yield $candidate->getCode();
                         }

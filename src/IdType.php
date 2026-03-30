@@ -46,30 +46,30 @@ class IdType
      * @var array<string, string>
      */
     protected static array $titles = [
-        self::MAINLAND_ID => '居民身份证',
-        self::TAIWAN_ID => '台湾身份证',
-        self::HONG_KONG_ID => '香港身份证',
-        self::MACAU_ID => '澳门身份证',
-        self::HK_TO_MAINLAND_PERMIT => '港澳居民来往内地通行证(香港)',
-        self::MO_TO_MAINLAND_PERMIT => '澳门居民来往内地通行证',
+        self::MAINLAND_ID              => '居民身份证',
+        self::TAIWAN_ID                => '台湾身份证',
+        self::HONG_KONG_ID             => '香港身份证',
+        self::MACAU_ID                 => '澳门身份证',
+        self::HK_TO_MAINLAND_PERMIT    => '港澳居民来往内地通行证(香港)',
+        self::MO_TO_MAINLAND_PERMIT    => '澳门居民来往内地通行证',
         self::MAINLAND_TO_HK_MO_PERMIT => '往来港澳通行证',
-        self::MAINLAND_TO_TW_PERMIT => '大陆居民往来台湾通行证',
-        self::TW_TO_MAINLAND_PERMIT => '台湾居民来往大陆通行证',
+        self::MAINLAND_TO_TW_PERMIT    => '大陆居民往来台湾通行证',
+        self::TW_TO_MAINLAND_PERMIT    => '台湾居民来往大陆通行证',
     ];
 
     /**
      * @var array<string, class-string<IdInterface>>
      */
     protected static array $classMap = [
-        self::MAINLAND_ID => MainlandId::class,
-        self::TAIWAN_ID => TaiwanId::class,
-        self::HONG_KONG_ID => HongKongId::class,
-        self::MACAU_ID => MacauId::class,
-        self::HK_TO_MAINLAND_PERMIT => HkToMainlandPermit::class,
-        self::MO_TO_MAINLAND_PERMIT => MoToMainlandPermit::class,
+        self::MAINLAND_ID              => MainlandId::class,
+        self::TAIWAN_ID                => TaiwanId::class,
+        self::HONG_KONG_ID             => HongKongId::class,
+        self::MACAU_ID                 => MacauId::class,
+        self::HK_TO_MAINLAND_PERMIT    => HkToMainlandPermit::class,
+        self::MO_TO_MAINLAND_PERMIT    => MoToMainlandPermit::class,
         self::MAINLAND_TO_HK_MO_PERMIT => MainlandToHkMoPermit::class,
-        self::MAINLAND_TO_TW_PERMIT => MainlandToTwPermit::class,
-        self::TW_TO_MAINLAND_PERMIT => TwToMainlandPermit::class,
+        self::MAINLAND_TO_TW_PERMIT    => MainlandToTwPermit::class,
+        self::TW_TO_MAINLAND_PERMIT    => TwToMainlandPermit::class,
     ];
 
     /**
