@@ -13,16 +13,16 @@ abstract class AbstractId implements IdInterface
     use CartesianProduct;
 
     /**
-     * @var string
+     * @var null|string
      */
-    protected string $code;
+    protected ?string $code;
 
-    public function __construct(string $code)
+    public function __construct(?string $code = null)
     {
         $this->code = $code;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -34,7 +34,7 @@ abstract class AbstractId implements IdInterface
     abstract public function mask(): ?string;
 
     /**
-     * @return Generator<string>
+     * @return Generator<null|string>
      */
     abstract public static function complete(string $code, int $mode = 0): Generator;
 

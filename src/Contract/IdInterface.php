@@ -10,7 +10,7 @@ interface IdInterface
 {
     public function getType(): string;
 
-    public function getCode(): string;
+    public function getCode(): ?string;
 
     public function isValid(int $mode = 0): bool;
 
@@ -32,7 +32,7 @@ interface IdInterface
     public static function getCompletePattern(): string;
 
     /**
-     * @return Generator<string>
+     * @return Generator<null|string>
      */
     public static function complete(string $code, int $mode = 0): Generator;
 
