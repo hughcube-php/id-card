@@ -10,6 +10,7 @@ use HughCube\IdCard\Id\MainlandId;
 use HughCube\IdCard\Id\MainlandToHkMoPermit;
 use HughCube\IdCard\Id\MainlandToTwPermit;
 use HughCube\IdCard\Id\MoToMainlandPermit;
+use HughCube\IdCard\Id\NoneId;
 use HughCube\IdCard\Id\TaiwanId;
 use HughCube\IdCard\Id\TwToMainlandPermit;
 
@@ -127,5 +128,13 @@ class IdParser
     public static function twToMainlandPermit(string $code): TwToMainlandPermit
     {
         return new TwToMainlandPermit($code);
+    }
+
+    /**
+     * 创建未设置类型实例.
+     */
+    public static function noneId(string $code): NoneId
+    {
+        return new NoneId($code);
     }
 }

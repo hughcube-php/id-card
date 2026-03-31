@@ -10,11 +10,15 @@ use HughCube\IdCard\Id\MainlandId;
 use HughCube\IdCard\Id\MainlandToHkMoPermit;
 use HughCube\IdCard\Id\MainlandToTwPermit;
 use HughCube\IdCard\Id\MoToMainlandPermit;
+use HughCube\IdCard\Id\NoneId;
 use HughCube\IdCard\Id\TaiwanId;
 use HughCube\IdCard\Id\TwToMainlandPermit;
 
 class IdType
 {
+    /** 未设置 */
+    const NONE = 'none';
+
     /** 中华人民共和国居民身份证, 大陆签发, 18位 */
     const MAINLAND_ID = 'mainland_id';
 
@@ -46,30 +50,32 @@ class IdType
      * @var array<string, string>
      */
     protected static array $titles = [
-        self::MAINLAND_ID              => '居民身份证',
-        self::TAIWAN_ID                => '台湾身份证',
-        self::HONG_KONG_ID             => '香港身份证',
-        self::MACAU_ID                 => '澳门身份证',
-        self::HK_TO_MAINLAND_PERMIT    => '港澳居民来往内地通行证(香港)',
-        self::MO_TO_MAINLAND_PERMIT    => '澳门居民来往内地通行证',
+        self::MAINLAND_ID => '居民身份证',
+        self::TAIWAN_ID => '台湾身份证',
+        self::HONG_KONG_ID => '香港身份证',
+        self::MACAU_ID => '澳门身份证',
+        self::HK_TO_MAINLAND_PERMIT => '港澳居民来往内地通行证(香港)',
+        self::MO_TO_MAINLAND_PERMIT => '澳门居民来往内地通行证',
         self::MAINLAND_TO_HK_MO_PERMIT => '往来港澳通行证',
-        self::MAINLAND_TO_TW_PERMIT    => '大陆居民往来台湾通行证',
-        self::TW_TO_MAINLAND_PERMIT    => '台湾居民来往大陆通行证',
+        self::MAINLAND_TO_TW_PERMIT => '大陆居民往来台湾通行证',
+        self::TW_TO_MAINLAND_PERMIT => '台湾居民来往大陆通行证',
+        self::NONE => '未设置',
     ];
 
     /**
      * @var array<string, class-string<IdInterface>>
      */
     protected static array $classMap = [
-        self::MAINLAND_ID              => MainlandId::class,
-        self::TAIWAN_ID                => TaiwanId::class,
-        self::HONG_KONG_ID             => HongKongId::class,
-        self::MACAU_ID                 => MacauId::class,
-        self::HK_TO_MAINLAND_PERMIT    => HkToMainlandPermit::class,
-        self::MO_TO_MAINLAND_PERMIT    => MoToMainlandPermit::class,
+        self::MAINLAND_ID => MainlandId::class,
+        self::TAIWAN_ID => TaiwanId::class,
+        self::HONG_KONG_ID => HongKongId::class,
+        self::MACAU_ID => MacauId::class,
+        self::HK_TO_MAINLAND_PERMIT => HkToMainlandPermit::class,
+        self::MO_TO_MAINLAND_PERMIT => MoToMainlandPermit::class,
         self::MAINLAND_TO_HK_MO_PERMIT => MainlandToHkMoPermit::class,
-        self::MAINLAND_TO_TW_PERMIT    => MainlandToTwPermit::class,
-        self::TW_TO_MAINLAND_PERMIT    => TwToMainlandPermit::class,
+        self::MAINLAND_TO_TW_PERMIT => MainlandToTwPermit::class,
+        self::TW_TO_MAINLAND_PERMIT => TwToMainlandPermit::class,
+        self::NONE => NoneId::class,
     ];
 
     /**
@@ -85,9 +91,9 @@ class IdType
     /**
      * 判断给定类型是否存在.
      */
-    public static function has(string $type): bool
+    public static function has($type): bool
     {
-        return isset(static::$titles[$type]);
+        return is_string($type) && isset(static::$titles[$type]);
     }
 
     /**
@@ -95,11 +101,7 @@ class IdType
      */
     public static function title($type): ?string
     {
-        if (!is_string($type)) {
-            return null;
-        }
-
-        return static::$titles[$type] ?? null;
+        return is_string($type) ? (static::$titles[$type] ?? null) : null;
     }
 
     /**
@@ -107,9 +109,9 @@ class IdType
      *
      * @return class-string<IdInterface>|null
      */
-    public static function getClass(string $type): ?string
+    public static function getClass($type): ?string
     {
-        return static::$classMap[$type] ?? null;
+        return is_string($type) ? (static::$classMap[$type] ?? null) : null;
     }
 
     /**

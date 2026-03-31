@@ -10,7 +10,7 @@ class IdTypeTest extends TestCase
     public function test_all()
     {
         $all = IdType::all();
-        $this->assertCount(9, $all);
+        $this->assertCount(10, $all);
         $this->assertContains(IdType::MAINLAND_ID, $all);
         $this->assertContains(IdType::TAIWAN_ID, $all);
         $this->assertContains(IdType::HONG_KONG_ID, $all);
@@ -20,6 +20,7 @@ class IdTypeTest extends TestCase
         $this->assertContains(IdType::MAINLAND_TO_HK_MO_PERMIT, $all);
         $this->assertContains(IdType::MAINLAND_TO_TW_PERMIT, $all);
         $this->assertContains(IdType::TW_TO_MAINLAND_PERMIT, $all);
+        $this->assertContains(IdType::NONE, $all);
     }
 
     public function test_has()
@@ -41,6 +42,7 @@ class IdTypeTest extends TestCase
         $this->assertSame('往来港澳通行证', IdType::title(IdType::MAINLAND_TO_HK_MO_PERMIT));
         $this->assertSame('大陆居民往来台湾通行证', IdType::title(IdType::MAINLAND_TO_TW_PERMIT));
         $this->assertSame('台湾居民来往大陆通行证', IdType::title(IdType::TW_TO_MAINLAND_PERMIT));
+        $this->assertSame('未设置', IdType::title(IdType::NONE));
         $this->assertNull(IdType::title('nonexistent'));
     }
 
@@ -48,6 +50,7 @@ class IdTypeTest extends TestCase
     {
         $this->assertSame('HughCube\IdCard\Id\MainlandId', IdType::getClass(IdType::MAINLAND_ID));
         $this->assertSame('HughCube\IdCard\Id\TwToMainlandPermit', IdType::getClass(IdType::TW_TO_MAINLAND_PERMIT));
+        $this->assertSame('HughCube\IdCard\Id\NoneId', IdType::getClass(IdType::NONE));
         $this->assertNull(IdType::getClass('nonexistent'));
     }
 
@@ -63,6 +66,7 @@ class IdTypeTest extends TestCase
         $this->assertTrue(IdType::isValid(IdType::MAINLAND_TO_HK_MO_PERMIT, 'C12345678'));
         $this->assertTrue(IdType::isValid(IdType::MAINLAND_TO_TW_PERMIT, 'L12345678'));
         $this->assertTrue(IdType::isValid(IdType::TW_TO_MAINLAND_PERMIT, '12345678'));
+        $this->assertFalse(IdType::isValid(IdType::NONE, 'anything'));
         $this->assertFalse(IdType::isValid('nonexistent', '12345678'));
     }
 
@@ -77,6 +81,8 @@ class IdTypeTest extends TestCase
         $this->assertSame('C12****78', IdType::mask(IdType::MAINLAND_TO_HK_MO_PERMIT, 'C12345678'));
         $this->assertSame('L12****78', IdType::mask(IdType::MAINLAND_TO_TW_PERMIT, 'L12345678'));
         $this->assertSame('12****78', IdType::mask(IdType::TW_TO_MAINLAND_PERMIT, '12345678'));
+        $this->assertNull(IdType::mask(IdType::NONE, '12345678'));
         $this->assertNull(IdType::mask('nonexistent', '12345678'));
     }
+
 }
