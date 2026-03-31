@@ -21,8 +21,12 @@ class IdParser
      * 按格式特异性从高到低尝试匹配, 返回第一个 isValid() 通过的实例.
      * 无法识别返回 null.
      */
-    public static function parse(string $code): ?IdInterface
+    public static function parse(?string $code = null): ?IdInterface
     {
+        if (null === $code) {
+            return new NoneId();
+        }
+
         $classes = [
             MainlandId::class,
             TaiwanId::class,
@@ -48,7 +52,7 @@ class IdParser
     /**
      * 通过类型和号码创建证件实例.
      */
-    public static function create(string $type, string $code): ?IdInterface
+    public static function create(?string $type = null, ?string $code = null): ?IdInterface
     {
         $class = IdType::getClass($type);
         if ($class === null) {
@@ -133,7 +137,7 @@ class IdParser
     /**
      * 创建未设置类型实例.
      */
-    public static function noneId(string $code): NoneId
+    public static function noneId(?string $code = null): NoneId
     {
         return new NoneId($code);
     }
