@@ -10,6 +10,14 @@ use HughCube\IdCard\IdType;
  */
 class NoneId extends AbstractId
 {
+    /** @var ?string */
+    protected ?string $code = null;
+
+    public function __construct(?string $code = null)
+    {
+        $this->code = $code;
+    }
+
     public function getType(): string
     {
         return IdType::NONE;
@@ -32,7 +40,7 @@ class NoneId extends AbstractId
 
     public function isValid(int $mode = 0): bool
     {
-        return $this->code === null;
+        return null === $this->code;
     }
 
     public function mask(): ?string
